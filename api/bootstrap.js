@@ -97,7 +97,7 @@ const processGPX = (filename, callback) => {
       }
       const coords = JSON.stringify(points.slice(
         lastMinPoint,
-        Math.min(lastMinPoint + 3, points.length)
+        Math.min(lastMinPoint + 5, points.length)
       ).map((coord) => ({
         latitude: coord.latitude,
         longitude: coord.longitude,

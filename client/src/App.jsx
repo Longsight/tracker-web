@@ -23,7 +23,7 @@ const competitorStatus = (status) => {
 const checkpointTitle = (checkpoint) => {
   const cumulative = (checkpoint.cumulative / 1000).toFixed(2);
   const distance = (checkpoint.distance / 1000).toFixed(2);
-  return `From start: ${cumulative}   From last: ${distance}`;
+  return `From start: ${cumulative}km     From last: ${distance}km`;
 }
 
 function App() {

@@ -36,6 +36,12 @@ export const web = (port, db) => {
         if (!competitor) {
           results = null;
         } else {
+          const ping = db.prepare(`
+            SELECT t.timestamp FROM tracks AS t, races AS r,
+            competitors as c WHERE t.competitor = c.competitorid AND
+            c.race = r.raceid AND r.tag = @race AND
+            c.bib = @competitor ORDER BY t.timestamp DESC LIMIT 1
+          `).get({ race, competitor });
           const track = db.prepare(`
             SELECT t.lat, t.lon FROM
             tracks AS t, races AS r, competitors as c WHERE
@@ -54,6 +60,7 @@ export const web = (port, db) => {
             c.bib = @competitor ORDER BY ch.\`order\` ASC
           `).all({ race, competitor });
           results = {
+            ping,
             track,
             timings,
           };

@@ -1,0 +1,34 @@
+.competitorStatus {
+    font-weight: bold;
+}
+
+.competitorStatus.retired {
+    color: red
+}
+
+.competitorStatus.active {
+    color: green;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td, th {
+    box-sizing: border-box;
+    width: 140px;
+    min-width: 140px;
+    padding: 3px 10px;
+}
+
+td:last-child, th:last-child  {
+    text-align: right;
+}
+
+tbody tr:nth-child(2n+1) {
+    background-color: #eeeeee;
+}
+
+.statusBox {
+    margin: 10px 0;
+}

@@ -1,5 +1,7 @@
 import { useCallback, useState, useEffect } from 'react';
-import { MapContainer, TileLayer, GeoJSON, Popup, CircleMarker, Marker, Polyline } from 'react-leaflet'
+import {
+  MapContainer, TileLayer, GeoJSON, Popup,
+  CircleMarker, Marker, Polyline, ScaleControl } from 'react-leaflet'
 import { ReadyState } from 'react-use-websocket';
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import './leaflet.css';
@@ -241,6 +243,7 @@ function App() {
         {track.length > 0? (
           <Polyline pathOptions={{ color: 'red' }} positions={track.map(coords => [coords.lat, coords.lon])}/>
         ): null}
+        <ScaleControl/>
       </MapContainer>
     </>
   )

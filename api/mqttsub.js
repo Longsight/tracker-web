@@ -108,10 +108,11 @@ export const mqttsub = (config, db) => {
       ORDER BY c.\`order\` ASC
     `).all({ race: comp.raceid, comp: comp.competitor });
     nextCPs.some((nextCP) => {
-      if (!haversine(newCoords, nextCP.coords[0], {threshold: 1500, unit: 'meter'})) {
+      const cpCoords = JSON.parse(nextCP.coords);
+      if (!haversine(newCoords, cpCoords[0], {threshold: 1500, unit: 'meter'})) {
         return false;
       }
-      return JSON.parse(nextCP.coords).some((testCoords) => {
+      return cpCoords.some((testCoords) => {
         if (haversine(newCoords, testCoords, {threshold: 200, unit: 'meter'})) {
           try {
             db.prepare(`

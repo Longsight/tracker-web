@@ -18,7 +18,7 @@ const competitorStatus = (status, ping) => {
     case 0:
       return (<span className='competitorStatus retired'>RETIRED</span>);
     default:
-      if (!!ping && ((Date.now() / 1000) - ping.timestamp + 86400) < 1800) {
+      if (!!ping && ((Date.now() / 1000) - ping.timestamp) < 1800) {
         return (<span className='competitorStatus active'>ACTIVE</span>);
       }
       return (<span className='competitorStatus inactive'>INACTIVE</span>);

@@ -238,7 +238,7 @@ function App() {
                     </tr>
                     <tr>
                       <td>Battery:</td>
-                      <td><strong>{!!ping? ping.bat: N/A}%</strong></td>
+                      <td><strong>{!!ping? `${ping.bat}%`: 'N/A'}</strong></td>
                     </tr>
                   </table>
                   <table>

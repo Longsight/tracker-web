@@ -173,13 +173,13 @@ function App() {
       case 0:
         return (<span className='competitorStatus retired'>RETIRED</span>);
       default:
-        if (!!ping && ((Date.now() / 1000) - ping.timestamp) < 1800) {
+        if (!!ping && ((Date.now() / 1000) - ping.timestamp) < 1200) {
           if (competitor.speed < 0.5) {
             return (<span className='competitorStatus inactive'>NOT MOVING</span>);
           }
           return (<span className='competitorStatus active'>ACTIVE</span>);
         }
-        return (<span className='competitorStatus inactive'>INACTIVE</span>);
+        return (<span className='competitorStatus inactive'>NO SIGNAL</span>);
     }
   }
 

@@ -40,6 +40,7 @@ function App() {
   const [focused, setFocused] = useState(null);
   const [track, setTrack] = useState([]);
   const [timings, setTimings] = useState([]);
+  const [ping, setPing] = useState(null);
   
   const socketUrl = `wss://${window.location.hostname}/tracker/ws/`;
   const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(socketUrl, {
@@ -104,7 +105,6 @@ function App() {
       if (results) {
         if (Array.isArray(results.track)) {
           setTrack(results.track);
-          setTimings(results.timings);
           if (map) {
             const zoom = results.track.slice(-1)[0];
             map.setView([zoom.lat, zoom.lon]);
@@ -112,6 +112,9 @@ function App() {
         }
         if (Array.isArray(results.timings)) {
           setTimings(results.timings);
+        }
+        if (!!results.ping) {
+          setPing(results.ping);
         }
       }
     }
@@ -168,6 +171,11 @@ function App() {
     }
   }, [raceRoute]);
 
+  var pingText = null;
+  if (!!ping) {
+    const pingObj = new Date(ping.timestamp * 1000);
+    pingText = `${days[pingObj.getDay()]} ${pingObj.toLocaleTimeString()}`;
+  }
   return (
     <>
       <MapContainer
@@ -214,6 +222,10 @@ function App() {
                 <tr>
                   <td>{competitorStatus(competitor.status)}</td>
                   <td>Speed: {competitor.speed} km/h</td>
+                </tr>
+                <tr>
+                  <td>Last tracked:</td>
+                  <td>{pingText}</td>
                 </tr>
               </table>
               <table>

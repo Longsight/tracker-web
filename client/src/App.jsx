@@ -91,6 +91,7 @@ function App() {
     const { command, results } = lastJsonMessage;
     if (command == 'fetchAll') {
       setCompetitors(results);
+      setFocused(results[0].bib);
     }
     if (command == 'fetchCompetitor') {
       if (results) {

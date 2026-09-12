@@ -55,11 +55,11 @@ export const mqttsub = (config, db) => {
     }
 
     // Check race is happening
-    // const now = parseInt(Date.now() / 1000);
-    // if (now < parseInt(comp.start_time)) {
-    //   err(`Race ${comp.name} is not currently in progress`);
-    //   return;
-    // }
+    const now = parseInt(Date.now() / 1000);
+    if (now < parseInt(comp.start_time)) {
+      err(`Race ${comp.name} is not currently in progress`);
+      return;
+    }
     const newCoords = {
       latitude: lat,
       longitude: lon,

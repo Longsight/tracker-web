@@ -10,7 +10,7 @@
     color: green;
 }
 
-.competitorStatus.active {
+.competitorStatus.inactive {
     color: #ccc;
 }
 

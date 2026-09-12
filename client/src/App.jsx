@@ -236,6 +236,10 @@ function App() {
                       <td>Last tracked:</td>
                       <td><strong>{pingText}</strong></td>
                     </tr>
+                    <tr>
+                      <td>Battery:</td>
+                      <td><strong>{ping.bat}%</strong></td>
+                    </tr>
                   </table>
                   <table>
                     <thead>

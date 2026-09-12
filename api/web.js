@@ -37,7 +37,7 @@ export const web = (port, db) => {
           results = null;
         } else {
           const ping = db.prepare(`
-            SELECT t.timestamp FROM tracks AS t, races AS r,
+            SELECT t.timestamp, t.bat FROM tracks AS t, races AS r,
             competitors as c WHERE t.competitor = c.competitorid AND
             c.race = r.raceid AND r.tag = @race AND
             c.bib = @competitor ORDER BY t.timestamp DESC LIMIT 1

@@ -234,7 +234,7 @@ function App() {
                     </tr>
                     <tr>
                       <td>Last tracked:</td>
-                      <td>{pingText}</td>
+                      <td><strong>{pingText}</strong></td>
                     </tr>
                   </table>
                   <table>

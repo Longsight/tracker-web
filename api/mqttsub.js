@@ -101,14 +101,17 @@ export const mqttsub = (config, db) => {
     }
 
     // Test next checkpoint against new track
-    const nextCP = db.prepare(`
+    const nextCPs = db.prepare(`
       SELECT * FROM checkpoints AS c WHERE c.race = @race AND c.\`order\` >
       (SELECT c.\`order\` FROM checkins AS ch, checkpoints as c WHERE ch.competitor = @comp AND
       ch.checkpoint = c.checkpointid ORDER BY c.\`order\` DESC LIMIT 1)
-      ORDER BY c.\`order\` LIMIT 1
-    `).get({ race: comp.raceid, comp: comp.competitor });
-    if (nextCP) {
-      JSON.parse(nextCP.coords).some((testCoords) => {
+      ORDER BY c.\`order\` ASC
+    `).all({ race: comp.raceid, comp: comp.competitor });
+    nextCPs.some((nextCP) => {
+      if (!haversine(newCoords, nextCP.coords[0], {threshold: 1500, unit: 'meter'})) {
+        return false;
+      }
+      return JSON.parse(nextCP.coords).some((testCoords) => {
         if (haversine(newCoords, testCoords, {threshold: 200, unit: 'meter'})) {
           try {
             db.prepare(`
@@ -127,6 +130,6 @@ export const mqttsub = (config, db) => {
         }
         return false;
       });
-    }
+    });
   });
 }

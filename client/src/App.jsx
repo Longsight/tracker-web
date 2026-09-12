@@ -13,18 +13,6 @@ const raceName = window.location.pathname.replace('/tracker/', '');
 
 const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const competitorStatus = (status, ping) => {
-  switch (status) {
-    case 0:
-      return (<span className='competitorStatus retired'>RETIRED</span>);
-    default:
-      if (!!ping && ((Date.now() / 1000) - ping.timestamp) < 1800) {
-        return (<span className='competitorStatus active'>ACTIVE</span>);
-      }
-      return (<span className='competitorStatus inactive'>INACTIVE</span>);
-  }
-}
-
 const checkpointTitle = (checkpoint) => {
   const cumulative = (checkpoint.cumulative / 1000).toFixed(2);
   const distance = (checkpoint.distance / 1000).toFixed(2);
@@ -179,6 +167,22 @@ function App() {
     const pingObj = new Date(ping.timestamp * 1000);
     pingText = `${days[pingObj.getDay()]} ${pingObj.toLocaleTimeString()}`;
   }
+
+  const competitorStatus = (competitor) => {
+    switch (competitor.status) {
+      case 0:
+        return (<span className='competitorStatus retired'>RETIRED</span>);
+      default:
+        if (!!ping && ((Date.now() / 1000) - ping.timestamp) < 1800) {
+          if (competitor.speed < 0.5) {
+            return (<span className='competitorStatus inactive'>NOT MOVING</span>);
+          }
+          return (<span className='competitorStatus active'>ACTIVE</span>);
+        }
+        return (<span className='competitorStatus inactive'>INACTIVE</span>);
+    }
+  }
+
   return (
     <>
       <MapContainer
@@ -220,38 +224,42 @@ function App() {
             position={[competitor.lat, competitor.lon]}
           >
             <Popup>
-              <strong>{competitor.bib}: {competitor.name}</strong>
-              <table className='statusBox'>
-                <tr>
-                  <td>{competitorStatus(competitor.status, ping)}</td>
-                  <td>Speed: {competitor.speed} km/h</td>
-                </tr>
-                <tr>
-                  <td>Last tracked:</td>
-                  <td>{pingText}</td>
-                </tr>
-              </table>
-              <table>
-                <thead>
-                  <tr><th>Checkpoint</th><th>Timing</th></tr>
-                </thead>
-                <tbody>
-                  {checkpoints.map((checkpoint, index) => {
-                    var timing = null;
-                    if (timings[index]) {
-                      const dateObj = new Date(timings[index].timestamp * 1000);
-                      timing = `${days[dateObj.getDay()]} ${dateObj.toLocaleTimeString()}`;
-                    }
-                    return (
-                      <tr key={index}>
-                        <td title={checkpointTitle(checkpoint)}>{checkpoint.name}</td>
-                        <td>{timing}</td>
-                      </tr>
-                    );
-                  }
-                  )}
-                </tbody>
-              </table>
+              {competitor.bib == focused? (
+                <>
+                  <strong>{competitor.bib}: {competitor.name}</strong>
+                  <table className='statusBox'>
+                    <tr>
+                      <td>{competitorStatus(competitor)}</td>
+                      <td>Speed: {competitor.speed} km/h</td>
+                    </tr>
+                    <tr>
+                      <td>Last tracked:</td>
+                      <td>{pingText}</td>
+                    </tr>
+                  </table>
+                  <table>
+                    <thead>
+                      <tr><th>Checkpoint</th><th>Timing</th></tr>
+                    </thead>
+                    <tbody>
+                      {checkpoints.map((checkpoint, index) => {
+                        var timing = null;
+                        if (timings[index]) {
+                          const dateObj = new Date(timings[index].timestamp * 1000);
+                          timing = `${days[dateObj.getDay()]} ${dateObj.toLocaleTimeString()}`;
+                        }
+                        return (
+                          <tr key={index}>
+                            <td title={checkpointTitle(checkpoint)}>{checkpoint.name}</td>
+                            <td>{timing}</td>
+                          </tr>
+                        );
+                      }
+                      )}
+                    </tbody>
+                  </table>
+                </>
+              ): null}
             </Popup>
           </Marker>
         ))}

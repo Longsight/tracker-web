@@ -90,7 +90,7 @@ export const mqttsub = (config, db) => {
     // Insert new track
     try {
       db.prepare(`
-        INSERT INTO tracks (competitor, timestamp, lat, lon, temp, bat)
+        INSERT INTO tracks (competitor, timestamp, lat, lon, bat, temp)
         VALUES (@comp, @time, @lat, @lon, @bat, @temp)
       `).run({
         comp: comp.competitor,

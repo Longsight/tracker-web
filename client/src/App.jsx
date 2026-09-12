@@ -13,12 +13,15 @@ const raceName = window.location.pathname.replace('/tracker/', '');
 
 const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const competitorStatus = (status) => {
+const competitorStatus = (status, ping) => {
   switch (status) {
     case 0:
       return (<span className='competitorStatus retired'>RETIRED</span>);
     default:
-      return (<span className='competitorStatus active'>ACTIVE</span>);
+      if (!!ping && ((Date.now() / 1000) - ping.timestamp) < 1800) {
+        return (<span className='competitorStatus active'>ACTIVE</span>);
+      }
+      return (<span className='competitorStatus inactive'>INACTIVE</span>);
   }
 }
 
@@ -220,7 +223,7 @@ function App() {
               <strong>{competitor.bib}: {competitor.name}</strong>
               <table className='statusBox'>
                 <tr>
-                  <td>{competitorStatus(competitor.status)}</td>
+                  <td>{competitorStatus(competitor.status, ping)}</td>
                   <td>Speed: {competitor.speed} km/h</td>
                 </tr>
                 <tr>

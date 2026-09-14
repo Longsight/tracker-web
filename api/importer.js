@@ -1,8 +1,8 @@
 import fs from 'fs';
-import readline from 'readline';
 import mqtt from 'mqtt';
 import { parseGPXWithCustomParser } from '@we-gold/gpxjs'
 import { DOMParser } from "xmldom-qsa"
+import { mqttconfig } from './config.js';
 import { logger } from './logger.js';
 
 const { log, err } = logger('import');
@@ -11,13 +11,13 @@ const customParseMethod = (txt) => {
 	return new DOMParser().parseFromString(txt, "text/xml")
 }
 
-export const importer = (config, db) => {
+export const importer = (files) => {
   const {
     url,
     username,
     password,
     topic
-  } = config;
+  } = mqttconfig;
 
   const client = mqtt.connect(url, {
     clientId: `mqtt_${Math.random().toString(16).slice(3)}`,

@@ -52,6 +52,7 @@ export const importer = (files) => {
 
     const publishTrack = (index) => {
       if (index >= points.length) {
+        client.end();
         return;
       }
       const point = points[index];

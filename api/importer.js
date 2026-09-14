@@ -47,7 +47,7 @@ export const importer = (files) => {
     if (gpxerr) {
       console.error(gpxerr);
     }
-    log(parsedFile.tracks[0].points[0]);
+    log(JSON.stringify(parsedFile.tracks[0]));
   });
 }
 

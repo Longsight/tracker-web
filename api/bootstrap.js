@@ -13,7 +13,7 @@ const customParseMethod = (txt) => {
 }
 
 const chain = (list, func) => {
-  return list.reduce((memo, next) => memo.then(func(next)), Promise.resolve(true));
+  return list.reduce((memo, next) => memo.then(() => func(next)), Promise.resolve(true));
 }
 
 const processSQL = (files) => {
@@ -27,11 +27,6 @@ const processSQL = (files) => {
     });
     
     var stmt = '';
-    readInterface.on('open', () => {
-      console.log();
-      console.log();
-      console.log(`=== ${files}`);
-    });
     readInterface.on('line', (line) => {
       if (!line) {
         return;

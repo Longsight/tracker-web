@@ -264,6 +264,7 @@ function App() {
                     <tbody>
                       {checkpoints.map((checkpoint) => {
                         var timing = timings[checkpoint.checkpointid] ?? null;
+                        var timeString = null;
                         if (timing) {
                           const dateObj = new Date(timing.timestamp * 1000);
                           timeString = `${days[dateObj.getDay()]} ${dateObj.toLocaleTimeString()}`;

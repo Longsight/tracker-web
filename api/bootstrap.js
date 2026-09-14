@@ -15,13 +15,9 @@ const customParseMethod = (txt) => {
 const chain = (list, func) => {
   return list.reduce((memo, next, index) => {
     if (memo == null) {
-      memo = func(next);
+      return func(next);
     }
-    console.log(`+++ ${index}`);
-    if (index < (list.length - 1)) {
-      return memo.then(func(list[index + 1]));
-    }
-    return memo;
+    return memo.then(func(next));
   }, null);
 }
 

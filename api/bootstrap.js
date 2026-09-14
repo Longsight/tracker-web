@@ -15,11 +15,12 @@ const customParseMethod = (txt) => {
 const chain = (list, func) => {
   return list.reduce((memo, next, index) => {
     if (memo == null) {
-      memo = func(list[0]);
+      memo = func(next);
     }
     if (index < (list.length - 1)) {
       return memo.then(func(list[index + 1]));
     }
+    console.log(`+++ ${index}`);
     return memo;
   }, null);
 }

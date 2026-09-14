@@ -60,7 +60,7 @@ export const importer = (files) => {
       client.publish(topic, 
         `mac:206ef1e26064,time:${time},bat:93,temp:18.80,lat:${latitude},lon:${longitude},imported:1`
       );
-      setTimeout(() => publishTrack(index + 1, 200));
+      setTimeout(() => publishTrack(index + 1), 200);
     };
 
     publishTrack(0);

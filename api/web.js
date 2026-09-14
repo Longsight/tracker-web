@@ -59,6 +59,7 @@ export const web = (port, db) => {
             r.tag = @race AND
             c.bib = @competitor ORDER BY ch.\`order\` ASC
           `).all({ race, competitor });
+          timings = Object.fromEntries(timings.map(entry => [entry.checkpoint, entry]));
           results = {
             ping,
             track,
@@ -69,7 +70,7 @@ export const web = (port, db) => {
 
       if (command == 'fetchCheckpoints') {
         results = db.prepare(`
-          SELECT ch.\`name\`, ch.distance, ch.cumulative
+          SELECT ch.checkpointid, ch.\`name\`, ch.distance, ch.cumulative
           FROM checkpoints as ch, races as r WHERE ch.race = r.raceid
           AND ch.\`name\` IS NOT NULL AND r.tag = @race
           ORDER BY ch.\`order\` ASC

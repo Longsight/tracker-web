@@ -262,16 +262,16 @@ function App() {
                       <tr><th>Checkpoint</th><th>Timing</th></tr>
                     </thead>
                     <tbody>
-                      {checkpoints.map((checkpoint, index) => {
-                        var timing = null;
-                        if (timings[index]) {
-                          const dateObj = new Date(timings[index].timestamp * 1000);
-                          timing = `${days[dateObj.getDay()]} ${dateObj.toLocaleTimeString()}`;
+                      {checkpoints.map((checkpoint) => {
+                        var timing = timings[checkpoint.checkpointid] ?? null;
+                        if (timing) {
+                          const dateObj = new Date(timing.timestamp * 1000);
+                          timeString = `${days[dateObj.getDay()]} ${dateObj.toLocaleTimeString()}`;
                         }
                         return (
                           <tr key={index}>
                             <td title={checkpointTitle(checkpoint)}>{checkpoint.name}</td>
-                            <td>{timing}</td>
+                            <td>{timeString}</td>
                           </tr>
                         );
                       }

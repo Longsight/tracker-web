@@ -20,8 +20,10 @@ const processSQL = (files) => {
   if (Array.isArray(files)) {
     return chain(files, processSQL);
   }
-  console.log(`=== ${files}`);
   return new Promise((resolve) => {
+    console.log();
+    console.log();
+    console.log(`=== ${files}`);
     const readInterface = readline.createInterface({
       input: fs.createReadStream(files),
       console: false

@@ -2,6 +2,7 @@ create table races(
     raceid integer primary key autoincrement,
     `name` text unique,
     tag text unique,
+    reading_delay integer,
     start_time integer,
     finish_time integer)
 create table checkpoints(

@@ -4515,9 +4515,6 @@
       <trkpt lat="53.362121" lon="-0.855101">
         <ele>17.8</ele>
       </trkpt>
-      <trkpt lat="53.362317" lon="-0.854421">
-        <ele>17.8</ele>
-      </trkpt>
     </trkseg>
   </trk>
 </gpx>

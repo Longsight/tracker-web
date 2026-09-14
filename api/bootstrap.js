@@ -13,12 +13,12 @@ const customParseMethod = (txt) => {
 }
 
 const chain = (list, func) => {
-  return files.reduce((memo, next, index) => {
+  return list.reduce((memo, next, index) => {
     if (memo == null) {
-      return func(files[0]);
+      return func(list[0]);
     }
-    if (index < (files.length - 1)) {
-      return memo.then(() => func(files[index + 1]));
+    if (index < (list.length - 1)) {
+      return memo.then(() => func(list[index + 1]));
     }
     return memo;
   }, null);

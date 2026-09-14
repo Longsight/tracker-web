@@ -43,6 +43,7 @@ const processSQL = (files) => {
           bind = JSON.parse(line);
         }
         if (!!stmt) {
+          log(stmt);
           try {
             if (bind) {
               db.prepare(stmt).run(bind);
@@ -53,7 +54,6 @@ const processSQL = (files) => {
             err(e.message);
           }
         }
-        log(line);
         if (!bind) {
           stmt = line;
         }

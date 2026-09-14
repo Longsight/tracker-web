@@ -40,7 +40,7 @@ create table checkins(
     competitor integer,
     checkpoint integer,
     timestamp integer,
-    manual integer 0,
+    manual integer default 0,
     foreign key(competitor) references competitors(competitorid) on update cascade on delete cascade,
     foreign key(checkpoint) references checkpoints(checkpointid) on update cascade on delete cascade)
 create unique index checkpoint_competitor on checkins(competitor, checkpoint)

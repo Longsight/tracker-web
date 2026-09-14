@@ -38,12 +38,12 @@ const processSQL = (files) => {
         log(line);
         stmt = `${stmt} ${line.trim()}`;
       } else {
+        log(stmt);
         var bind = null;
         if (line.startsWith('{')) {
           bind = JSON.parse(line);
         }
         if (!!stmt) {
-          log(stmt);
           try {
             if (bind) {
               db.prepare(stmt).run(bind);

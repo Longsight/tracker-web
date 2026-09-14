@@ -234,7 +234,7 @@ function App() {
             </GeoJSON>
           </>
         ): null}
-        {waypoints.length > 0? competitors.map((competitor) => {(
+        {waypoints.length > 0? competitors.map((competitor) => (
           <Marker 
             key={competitor.bib}
             eventHandlers={{
@@ -289,7 +289,7 @@ function App() {
               ): null}
             </Popup>
           </Marker>
-        )}): null}
+        )): null}
         {track.length > 0? (
           <Polyline
             pathOptions={{ color: 'red' }}

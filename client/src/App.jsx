@@ -20,13 +20,6 @@ const checkpointTitle = (checkpoint) => {
   return `From start: ${cumulative}km     From last: ${distance}km`;
 }
 
-const calculateSpeed = (track) => {
-  const [lastTrack, thisTrack] = track.slice(-2);
-  const distanceCovered = haversine([thisTrack.lat, thisTrack.lon], [lastTrack.lat, lastTrack.lon]);
-  const timeSince = thisTrack.timestamp - lastTrack.timestamp;
-  return (distanceCovered * (3600 / timeSince)).toFixed(1);
-}
-
 function App() {
   const [fetchedAll, setFetchedAll] = useState(false);
   const [fetchedCompetitor, setFetchedCompetitor] = useState(false);
@@ -177,13 +170,21 @@ function App() {
     pingText = `${days[pingObj.getDay()]} ${pingObj.toLocaleTimeString()}`;
   }
 
+  var speed = 0;
+  if (track.length > 1) {
+    const [lastTrack, thisTrack] = track.slice(-2);
+    const distanceCovered = haversine([thisTrack.lat, thisTrack.lon], [lastTrack.lat, lastTrack.lon]);
+    const timeSince = thisTrack.timestamp - lastTrack.timestamp;
+    speed = (distanceCovered * (3600 / timeSince));
+  }
+
   const competitorStatus = (competitor) => {
     switch (competitor.status) {
       case 0:
         return (<span className='competitorStatus retired'>RETIRED</span>);
       default:
         if (!!ping && ((Date.now() / 1000) - ping.timestamp) < 1200) {
-          if (competitor.speed < 0.5) {
+          if (speed < 0.5) {
             return (<span className='competitorStatus inactive'>NOT MOVING</span>);
           }
           return (<span className='competitorStatus active'>ACTIVE</span>);
@@ -239,9 +240,7 @@ function App() {
                   <table className='statusBox'>
                     <tr>
                       <td>{competitorStatus(competitor)}</td>
-                      {!!track && track.length > 1? (
-                        <td>Speed: ${calculateSpeed(track)} km/h</td>
-                      ): null}
+                      <td>Speed: ${speed.toFixed(1)} km/h</td>
                     </tr>
                     <tr>
                       <td>Last tracked:</td>

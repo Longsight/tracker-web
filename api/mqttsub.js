@@ -86,39 +86,32 @@ export const mqttsub = (config, db) => {
     const lastOrder = !!lastCP? lastCP.order: -1;
 
     // Test next checkpoint against new track
-    const nextCPs = db.prepare(`
-      SELECT * FROM checkpoints WHERE race = @race AND \`order\` > @order ORDER BY \`order\` ASC
-    `).all({ race: comp.raceid, order: lastOrder });
-    nextCPs.some((nextCP) => {
-      var cpCoords = JSON.parse(nextCP.coords);
-      if (!haversine(newCoords, cpCoords[0], {threshold: 1500, unit: 'meter'})) {
-        return false;
+    const nextCP = db.prepare(`
+      SELECT * FROM checkpoints WHERE race = @race AND \`order\` > @order ORDER BY \`order\` ASC LIMIT 1
+    `).get({ race: comp.raceid, order: lastOrder });
+    const cpCoords = JSON.parse(nextCP.coords);
+    if (!haversine(newCoords, cpCoords[0], {threshold: 1500, unit: 'meter'})) {
+      return;
+    }
+    return cpCoords.some((testCoords) => {
+      if (!!lastCP && nextCP.name == lastCP.name) {
+        return;
       }
-      if (imported == 1) {
-        cpCoords = cpCoords.slice(0, 1);
+      if (haversine(newCoords, testCoords, {threshold: 200, unit: 'meter'})) {
+        try {
+          db.prepare(`
+            INSERT INTO checkins (competitor, checkpoint, timestamp)
+            VALUES (@comp, @cp, @time)
+          `).run({
+            comp: comp.competitor,
+            cp: nextCP.checkpointid,
+            time
+          });
+          log(`Competitor ${comp.competitor} in race ${comp.raceid} reached CP ${nextCP.checkpointid}`);
+        } catch (error) {
+          err(error);
+        }
       }
-      return cpCoords.some((testCoords) => {
-        if (!!lastCP && nextCP.name == lastCP.name) {
-          return false;
-        }
-        if (haversine(newCoords, testCoords, {threshold: 200, unit: 'meter'})) {
-          try {
-            db.prepare(`
-              INSERT INTO checkins (competitor, checkpoint, timestamp)
-              VALUES (@comp, @cp, @time)
-            `).run({
-              comp: comp.competitor,
-              cp: nextCP.checkpointid,
-              time
-            });
-            log(`Competitor ${comp.competitor} in race ${comp.raceid} reached CP ${nextCP.checkpointid}`);
-            return true;
-          } catch (error) {
-            err(error);
-          }
-        }
-        return false;
-      });
     });
   });
 }

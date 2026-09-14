@@ -100,7 +100,9 @@ function App() {
           setTrack(results.track);
           if (map) {
             const zoom = results.track.slice(-1)[0];
-            map.setView([zoom.lat, zoom.lon]);
+            if (!!zoom) {
+              map.setView([zoom.lat, zoom.lon]);
+            }
           }
         }
         if (Array.isArray(results.timings)) {

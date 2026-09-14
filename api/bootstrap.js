@@ -4,6 +4,9 @@ import haversine from 'haversine';
 import Database from 'better-sqlite3';
 import { parseGPXWithCustomParser } from '@we-gold/gpxjs'
 import { DOMParser } from "xmldom-qsa"
+import { logger } from './logger.js';
+
+const { log, err } = logger('boot');
 
 const db = new Database('races.db');
 db.pragma('journal_mode = WAL');
@@ -32,7 +35,7 @@ const processSQL = (files) => {
         return;
       }
       if (line.startsWith(' ')) {
-        console.log(`>>> ${line}`);
+        log(line);
         stmt = `${stmt} ${line.trim()}`;
       } else {
         var bind = null;
@@ -47,12 +50,10 @@ const processSQL = (files) => {
               db.prepare(stmt).run();
             }
           } catch (e) {
-            console.log();
-            console.error(`!!! ${e.message}`);
+            err(e.message);
           }
         }
-        console.log();
-        console.log(`>>> ${line}`);
+        log(line);
         if (!bind) {
           stmt = line;
         }
@@ -69,13 +70,13 @@ const processGPX = (files) => {
     return chain(files, processGPX);
   }
   return new Promise((resolve) => {
-    fs.readFile(files, 'utf8', (err, data) => {
-      if (err) {
-        console.error(err);
+    fs.readFile(files, 'utf8', (readerr, data) => {
+      if (readerr) {
+        err(readerr);
       }
       const [parsedFile, gpxerr] = parseGPXWithCustomParser(data, customParseMethod);
       if (gpxerr) {
-        console.error(gpxerr);
+        err(gpxerr);
       }
       const wpStmt = db.prepare(`
         insert into checkpoints (\`name\`, race, \`order\`, coords, cumulative, distance) values
@@ -125,8 +126,7 @@ const processGPX = (files) => {
             ...checkpoint
           });
         } catch (e) {
-          console.log();
-          console.error(`!!! ${e.message}`);
+          err(e.message);
         }
         lastMinDist = 200;
         lastCPDist = cumulative;

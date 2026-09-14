@@ -64,7 +64,7 @@ export const importer = (files) => {
       setTimeout(() => publishTrack(index + 1), 10);
     };
 
-    log(`Sending ${points.length} trackpoints...`);
+    warn(`Sending ${points.length} trackpoints...`);
     publishTrack(0);
   });
 }

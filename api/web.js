@@ -22,10 +22,12 @@ export const web = (port, db) => {
 
       if (command == 'fetchAll') {
         results = db.prepare(`
-          SELECT c.name, c.bib, c.status FROM
-          competitors as c, races AS r WHERE
+          SELECT c.name, c.bib, c.status, max(t.timestamp) AS timestamp, t.lat, t.lon FROM
+          tracks AS t, races AS r, competitors as c WHERE
+          t.competitor = c.competitorid AND
           c.race = r.raceid AND
           r.tag = @race
+          GROUP BY competitor
         `).all({ race });
       }
 

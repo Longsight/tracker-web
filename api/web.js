@@ -27,7 +27,6 @@ export const web = (port, db) => {
           t.competitor = c.competitorid AND
           c.race = r.raceid AND
           r.tag = @race
-          GROUP BY competitor
         `).all({ race });
       }
 

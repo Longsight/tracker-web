@@ -38,12 +38,12 @@ export const mqttsub = (config, db) => {
       return;
     }
     const msg = payload.toString();
-    if (!msg.match(/mac:[0-9a-f]{12},time:\d{10,},bat:\d+,temp:[0-9.]+,lat:-?[0-9.]+,lon:-?[0-9.]+/)) {
+    if (!msg.match(/mac:[0-9a-f]{12},time:\d{10,},bat:\d+,temp:[0-9.]+,lat:-?[0-9.]+,lon:-?[0-9.]+(,imported:1)?/)) {
       return;
     }
 
     // Check competitor exists
-    const {mac, time, bat, temp, lat, lon} = Object.fromEntries(msg.split(',').map(part => part.split(':')));
+    const {mac, time, bat, temp, lat, lon, imported} = Object.fromEntries(msg.split(',').map(part => part.split(':')));
     const comp = db.prepare(`
       SELECT t.competitor, r.* FROM trackers AS t, competitors AS c, races AS r
         WHERE t.mac = @mac AND t.competitor IS NOT NULL AND c.competitorid = t.competitor AND
@@ -90,9 +90,12 @@ export const mqttsub = (config, db) => {
       SELECT * FROM checkpoints WHERE race = @race AND \`order\` > @order ORDER BY \`order\` ASC
     `).all({ race: comp.raceid, order: lastOrder });
     nextCPs.some((nextCP) => {
-      const cpCoords = JSON.parse(nextCP.coords);
+      var cpCoords = JSON.parse(nextCP.coords);
       if (!haversine(newCoords, cpCoords[0], {threshold: 1500, unit: 'meter'})) {
         return false;
+      }
+      if (imported == 1) {
+        cpCoords = cpCoords.slice(0, 1);
       }
       return cpCoords.some((testCoords) => {
         if (!!lastCP && nextCP.name == lastCP.name) {

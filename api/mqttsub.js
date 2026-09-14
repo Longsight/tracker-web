@@ -45,9 +45,9 @@ export const mqttsub = (config, db) => {
     // Check competitor exists
     const {mac, time, bat, temp, lat, lon} = Object.fromEntries(msg.split(',').map(part => part.split(':')));
     const comp = db.prepare(`
-      SELECT t.competitor, r.* FROM trackers AS t, competitors AS c, races AS r 
-      WHERE t.mac = @mac AND t.competitor IS NOT NULL AND c.competitorid = t.competitor AND
-      r.raceid = c.race
+      SELECT t.competitor, r.* FROM trackers AS t, competitors AS c, races AS r
+        WHERE t.mac = @mac AND t.competitor IS NOT NULL AND c.competitorid = t.competitor AND
+        r.raceid = c.race
     `).get({ mac });
     if (!comp.competitor) {
       err(`No competitor found matching tracker ${mac}`);
@@ -65,33 +65,11 @@ export const mqttsub = (config, db) => {
       longitude: lon,
     };
 
-    // Fetch last track
-    const lastTrack = db.prepare(`
-      SELECT lat AS latitude, lon AS longitude, timestamp FROM tracks
-      WHERE competitor = @comp ORDER BY timestamp DESC LIMIT 1
-    `).get({ comp: comp.competitor });
-    if (!!lastTrack) {
-      const distanceCovered = haversine(newCoords, lastTrack);
-      const timeSince = time - lastTrack.timestamp;
-      const speed = (distanceCovered * (3600 / timeSince)).toFixed(1);
-      try {
-        db.prepare(`
-          UPDATE competitors SET speed = @speed
-          WHERE competitorid = @comp
-        `).run({
-          speed,
-          comp: comp.competitor,
-        });
-      } catch (error) {
-        err(error);
-      }
-    }
-
     // Insert new track
     try {
       db.prepare(`
         INSERT INTO tracks (competitor, timestamp, lat, lon, bat, temp)
-        VALUES (@comp, @time, @lat, @lon, @bat, @temp)
+          VALUES (@comp, @time, @lat, @lon, @bat, @temp)
       `).run({
         comp: comp.competitor,
         time, lat, lon, bat, temp
@@ -100,19 +78,26 @@ export const mqttsub = (config, db) => {
       err(error);
     }
 
+    // Get last checkpoint
+    const lastCP = db.prepare(`
+      SELECT c.* FROM checkins AS ch, checkpoints as c WHERE ch.competitor = @comp AND
+        ch.checkpoint = c.checkpointid ORDER BY c.\`order\` DESC LIMIT 1
+    `).get({ race: comp.raceid, comp: comp.competitor });
+    const lastOrder = !!lastCP? lastCP.order: -1;
+
     // Test next checkpoint against new track
     const nextCPs = db.prepare(`
-      SELECT * FROM checkpoints AS c WHERE c.race = @race AND c.\`order\` >
-      (SELECT c.\`order\` FROM checkins AS ch, checkpoints as c WHERE ch.competitor = @comp AND
-      ch.checkpoint = c.checkpointid ORDER BY c.\`order\` DESC LIMIT 1)
-      ORDER BY c.\`order\` ASC
-    `).all({ race: comp.raceid, comp: comp.competitor });
+      SELECT * FROM checkpoints WHERE race = @race AND \`order\` > @order ORDER BY \`order\` ASC
+    `).all({ race: comp.raceid, order: lastOrder });
     nextCPs.some((nextCP) => {
       const cpCoords = JSON.parse(nextCP.coords);
       if (!haversine(newCoords, cpCoords[0], {threshold: 1500, unit: 'meter'})) {
         return false;
       }
       return cpCoords.some((testCoords) => {
+        if (!!lastCP && nextCP.name == lastCP.name) {
+          return false;
+        }
         if (haversine(newCoords, testCoords, {threshold: 200, unit: 'meter'})) {
           try {
             db.prepare(`

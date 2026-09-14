@@ -20,7 +20,6 @@ create table competitors(
     bib integer,
     race integer,
     status integer,
-    speed real,
     foreign key(race) references races(raceid) on update cascade on delete cascade)
 create table trackers(
     mac text primary key,

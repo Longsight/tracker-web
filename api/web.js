@@ -22,7 +22,7 @@ export const web = (port, db) => {
 
       if (command == 'fetchAll') {
         results = db.prepare(`
-          SELECT c.name, c.bib, c.status, c.speed, max(t.timestamp) AS timestamp, t.lat, t.lon FROM
+          SELECT c.name, c.bib, c.status, max(t.timestamp) AS timestamp, t.lat, t.lon FROM
           tracks AS t, races AS r, competitors as c WHERE
           t.competitor = c.competitorid AND
           c.race = r.raceid AND
@@ -43,7 +43,7 @@ export const web = (port, db) => {
             c.bib = @competitor ORDER BY t.timestamp DESC LIMIT 1
           `).get({ race, competitor });
           const track = db.prepare(`
-            SELECT t.lat, t.lon FROM
+            SELECT t.lat, t.lon, t.timestamp FROM
             tracks AS t, races AS r, competitors as c WHERE
             t.competitor = c.competitorid AND
             c.race = r.raceid AND

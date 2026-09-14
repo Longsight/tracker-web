@@ -7,6 +7,7 @@ import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import './leaflet.css';
 import './App.css';
 import { parseGPX } from '@we-gold/gpxjs'
+import haversine from 'haversine';
 
 const initial = [53.284784, -1.089135];
 const raceName = window.location.pathname.replace('/tracker/', '');
@@ -17,6 +18,13 @@ const checkpointTitle = (checkpoint) => {
   const cumulative = (checkpoint.cumulative / 1000).toFixed(2);
   const distance = (checkpoint.distance / 1000).toFixed(2);
   return `From start: ${cumulative}km     From last: ${distance}km`;
+}
+
+const calculateSpeed = (track) => {
+  const [lastTrack, thisTrack] = track.slice(-2);
+  const distanceCovered = haversine([thisTrack.lat, thisTrack.lon], [lastTrack.lat, lastTrack.lon]);
+  const timeSince = thisTrack.timestamp - lastTrack.timestamp;
+  return (distanceCovered * (3600 / timeSince)).toFixed(1);
 }
 
 function App() {
@@ -231,7 +239,9 @@ function App() {
                   <table className='statusBox'>
                     <tr>
                       <td>{competitorStatus(competitor)}</td>
-                      <td>Speed: {competitor.speed} km/h</td>
+                      {!!track && track.length > 1? (
+                        <td>Speed: ${calculateSpeed(track)} km/h</td>
+                      ): null}
                     </tr>
                     <tr>
                       <td>Last tracked:</td>
@@ -269,7 +279,10 @@ function App() {
           </Marker>
         ))}
         {track.length > 0? (
-          <Polyline pathOptions={{ color: 'red' }} positions={track.map(coords => [coords.lat, coords.lon])}/>
+          <Polyline
+            pathOptions={{ color: 'red' }}
+            positions={track.map(tracked => [tracked.lat, tracked.lon])}
+          />
         ): null}
         <ScaleControl/>
       </MapContainer>

@@ -181,7 +181,6 @@ function App() {
       longitude: lastTrack.lon,
     });
     const timeSince = thisTrack.timestamp - lastTrack.timestamp;
-    console.log(timeSince);
     speed = (distanceCovered * (3600 / timeSince));
   }
 
@@ -247,7 +246,7 @@ function App() {
                   <table className='statusBox'>
                     <tr>
                       <td>{competitorStatus(competitor)}</td>
-                      <td>Speed: ${speed.toFixed(1)} km/h</td>
+                      <td>Speed: {speed.toFixed(1)} km/h</td>
                     </tr>
                     <tr>
                       <td>Last tracked:</td>

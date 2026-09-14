@@ -15,7 +15,7 @@ export const web = (port, db) => {
   app.set('port', port);
   
   app.ws(`/ws`, wsRoute(db));
-  app.get('/tracker/:mac', trackerRoute(db));
+  app.get('/config/:mac', trackerRoute(db));
   app.use(errorRoute);
   
   server.listen(port);

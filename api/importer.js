@@ -5,7 +5,7 @@ import { DOMParser } from "xmldom-qsa"
 import { mqttconfig } from './config.js';
 import { logger } from './logger.js';
 
-const { log, err } = logger('import');
+const { warn, err } = logger('import');
 
 const customParseMethod = (txt) => {
 	return new DOMParser().parseFromString(txt, "text/xml")
@@ -29,9 +29,9 @@ export const importer = (files) => {
   });
 
   client.on('connect', () => {
-    log('Connected')
+    warn('Connected')
     client.subscribe([topic], () => {
-      log(`Subscribed to topic '${topic}'`);
+      warn(`Subscribed to topic '${topic}'`);
     })
   });
 
@@ -39,15 +39,15 @@ export const importer = (files) => {
     err('Connection failed');
   });
 
-  fs.readFile(files, 'utf8', (err, data) => {
-    if (err) {
-      console.error(err);
+  fs.readFile(files, 'utf8', (readerr, data) => {
+    if (readerr) {
+      err(readerr);
     }
     const [parsedFile, gpxerr] = parseGPXWithCustomParser(data, customParseMethod);
     if (gpxerr) {
-      console.error(gpxerr);
+      err(gpxerr);
     }
-    log(JSON.stringify(parsedFile.tracks[0]));
+    console.log(JSON.stringify(parsedFile.tracks[0]));
   });
 }
 

@@ -270,7 +270,7 @@ function App() {
                           timeString = `${days[dateObj.getDay()]} ${dateObj.toLocaleTimeString()}`;
                         }
                         return (
-                          <tr key={index}>
+                          <tr key={checkpoint.checkpointid}>
                             <td title={checkpointTitle(checkpoint)}>{checkpoint.name}</td>
                             <td>{timeString}</td>
                           </tr>

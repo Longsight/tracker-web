@@ -17,10 +17,10 @@ const chain = (list, func) => {
     if (memo == null) {
       memo = func(next);
     }
+    console.log(`+++ ${index}`);
     if (index < (list.length - 1)) {
       return memo.then(func(list[index + 1]));
     }
-    console.log(`+++ ${index}`);
     return memo;
   }, null);
 }

@@ -2,7 +2,8 @@ create table races(
     raceid integer primary key autoincrement,
     `name` text unique,
     tag text unique,
-    reading_delay integer,
+    sleep_time integer,
+    queue_size integer,
     start_time integer,
     finish_time integer)
 create table checkpoints(
@@ -25,6 +26,7 @@ create table competitors(
 create table trackers(
     mac text primary key,
     competitor integer,
+    battery_capacity integer,
     foreign key(competitor) references competitors(competitorid) on update cascade on delete set null)
 create table tracks(
     trackid integer primary key autoincrement,

@@ -22,7 +22,9 @@ export const web = (port, db) => {
 
       if (command == 'fetchAll') {
         results = db.prepare(`
-          SELECT c.name, c.bib, c.status, max(t.timestamp) AS timestamp, t.lat, t.lon FROM
+          SELECT c.name, c.bib, c.status, 
+          COALESCE(max(t.timestamp), r.start_time) AS timestamp,
+          t.lat, t.lon FROM
           competitors as c, races AS r FULL JOIN tracks AS t ON
           t.competitor = c.competitorid WHERE
           c.race = r.raceid AND

@@ -20,8 +20,8 @@ table {
 
 td, th {
     box-sizing: border-box;
-    width: 190px;
-    min-width: 190px;
+    width: 186px;
+    min-width: 186px;
     padding: 3px 10px;
 }
 

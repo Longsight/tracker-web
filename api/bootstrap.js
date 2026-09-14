@@ -12,9 +12,21 @@ const customParseMethod = (txt) => {
 	return new DOMParser().parseFromString(txt, "text/xml")
 }
 
+const chain = (list, func) => {
+  return files.reduce((memo, next, index) => {
+    if (memo == null) {
+      return func(files[0]);
+    }
+    if (index < (files.length - 1)) {
+      return memo.then(() => func(files[index + 1]));
+    }
+    return memo;
+  }, null);
+}
+
 const processSQL = (files) => {
   if (Array.isArray(files)) {
-    return Promise.all(files.map(file => processSQL(file)));
+    return chain(files, processSQL);
   }
   return new Promise((resolve, reject) => {
     const readInterface = readline.createInterface({
@@ -62,7 +74,7 @@ const processSQL = (files) => {
 
 const processGPX = (files) => {
   if (Array.isArray(files)) {
-    return Promise.all(files.map(file => processSQL(file)));
+    return chain(files, processGPX);
   }
   return new Promise((resolve, reject) => {
     fs.readFile(files, 'utf8', (err, data) => {

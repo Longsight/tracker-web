@@ -4500,6 +4500,12 @@
       <trkpt lat="53.3596251" lon="-0.8574057">
         <ele>26.569070579942455</ele>
       </trkpt>
+      <trkpt lat="53.3614003" lon="-0.8568746">
+        <ele>20.100000000000364</ele>
+      </trkpt>
+      <trkpt lat="53.362223" lon="-0.854988">
+        <ele>17.8</ele>
+      </trkpt>
     </trkseg>
   </trk>
 </gpx>

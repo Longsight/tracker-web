@@ -89,6 +89,9 @@ const processGPX = (files) => {
       const points = parsedFile.tracks[0].points;
       parsedFile.waypoints.forEach((checkpoint, index) => {
         while (true) {
+          if (!points[index]) {
+            break;
+          }
           const dist = haversine(points[pointIndex], checkpoint, {unit: 'meter'});
           if (dist < 10) {
             lastMinPoint = pointIndex;

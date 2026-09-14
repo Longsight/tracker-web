@@ -1,5 +1,5 @@
 export const trackerRoute = (db) => {
-  (req, res, next) => {
+  return (req, res, next) => {
     res.status(200);
   }
 }

@@ -137,5 +137,5 @@ const processGPX = (files) => {
 }
 
 processSQL(['schema.sql', 'bootstrap/first.sql'])
-  .then(processGPX('../client/public/gpx/rh100.gpx')) 
-  .then(processSQL('bootstrap/second.sql'));
+  .then(() => processGPX('../client/public/gpx/rh100.gpx')) 
+  .then(() => processSQL('bootstrap/second.sql'));

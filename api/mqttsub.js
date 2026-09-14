@@ -87,11 +87,10 @@ const ping = (msg) => {
   });
 }
 
-const configure = (msg, client) => {
-  if (!msg.match(/^mac:[0-9a-f]{12}$/)) {
+const configure = (mac, client) => {
+  if (!mac.match(/^[0-9a-f]{12}$/)) {
     return;
   }
-  const mac = msg.replace('mac:', '');
   try {
     const tracker = db.prepare(`
       SELECT r.sleep_time, r.queue_size, r.start_time, r.finish_time, t.battery_capacity

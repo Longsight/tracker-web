@@ -254,14 +254,18 @@ function App() {
                       <td>{competitorStatus(competitor)}</td>
                       <td>Speed: {speed.toFixed(1)} km/h</td>
                     </tr>
-                    <tr>
-                      <td>Last tracked:</td>
-                      <td><strong>{pingText}</strong></td>
-                    </tr>
-                    <tr>
-                      <td>Battery:</td>
-                      <td><strong>{!!ping? `${ping.bat}%`: 'N/A'}</strong></td>
-                    </tr>
+                    {ping? (
+                      <>
+                        <tr>
+                          <td>Last tracked:</td>
+                          <td><strong>{pingText}</strong></td>
+                        </tr>
+                        <tr>
+                          <td>Battery:</td>
+                          <td><strong>{ping.bat}%</strong></td>
+                        </tr>
+                      </>
+                    ): null}
                   </table>
                   <table>
                     <thead>

@@ -20,7 +20,8 @@ const processSQL = (files) => {
   if (Array.isArray(files)) {
     return chain(files, processSQL);
   }
-  return new Promise((resolve, reject) => {
+  console.log(`=== ${files}`);
+  return new Promise((resolve) => {
     const readInterface = readline.createInterface({
       input: fs.createReadStream(files),
       console: false
@@ -68,7 +69,7 @@ const processGPX = (files) => {
   if (Array.isArray(files)) {
     return chain(files, processGPX);
   }
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     fs.readFile(files, 'utf8', (err, data) => {
       if (err) {
         console.error(err);

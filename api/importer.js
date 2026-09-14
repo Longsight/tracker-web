@@ -50,8 +50,7 @@ export const importer = (files) => {
     parsedFile.tracks[0].points.forEach((point) => {
       const time = parseInt(new Date(point.time).getTime() / 1000);
       const { latitude, longitude } = point;
-      console.log(time);
-      // client.publish(topic, `mac:206ef1e26064,time:${time},bat:93,temp:18.80,lat:${latitude},lon:${longitude}`);
+      client.publish(topic, `mac:206ef1e26064,time:${time},bat:93,temp:18.80,lat:${latitude},lon:${longitude}`);
     });
   });
 }

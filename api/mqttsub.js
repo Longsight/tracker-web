@@ -44,6 +44,9 @@ export const mqttsub = (config, db) => {
 
     // Check competitor exists
     const {mac, time, bat, temp, lat, lon, imported} = Object.fromEntries(msg.split(',').map(part => part.split(':')));
+    if (!lat && !lon) {
+      return;
+    }
     const comp = db.prepare(`
       SELECT t.competitor, r.* FROM trackers AS t, competitors AS c, races AS r
         WHERE t.mac = @mac AND t.competitor IS NOT NULL AND c.competitorid = t.competitor AND

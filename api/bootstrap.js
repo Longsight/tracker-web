@@ -126,4 +126,7 @@ const processGPX = (filename, callback) => {
   });
 }
 
-processSQL('bootstrap/first.sql', () => processGPX('../client/public/gpx/rh100.gpx', () => processSQL('bootstrap/second.sql')))
+processSQL(
+  ['schema.sql', 'bootstrap/first.sql'],
+  () => processGPX('../client/public/gpx/rh100.gpx', 
+    () => processSQL('bootstrap/second.sql')))

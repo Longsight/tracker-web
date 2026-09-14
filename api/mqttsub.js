@@ -89,6 +89,9 @@ export const mqttsub = (config, db) => {
     const nextCP = db.prepare(`
       SELECT * FROM checkpoints WHERE race = @race AND \`order\` > @order ORDER BY \`order\` ASC LIMIT 1
     `).get({ race: comp.raceid, order: lastOrder });
+    if (!nextCP) {
+      return;
+    }
     const cpCoords = JSON.parse(nextCP.coords);
     if (!haversine(newCoords, cpCoords[0], {threshold: 1500, unit: 'meter'})) {
       return;

@@ -14,7 +14,7 @@ export const web = (port, db) => {
   expressWs(app, server);
   app.set('port', port);
   
-  app.ws(`/ws`, wsRoute);
+  app.ws(`/ws`, wsRoute(db));
   app.get('/tracker', trackerRoute);
   app.use(errorRoute);
   

@@ -13,12 +13,7 @@ const customParseMethod = (txt) => {
 }
 
 const chain = (list, func) => {
-  return list.reduce((memo, next, index) => {
-    if (memo == null) {
-      return func(next);
-    }
-    return memo.then(func(next));
-  }, null);
+  return list.reduce((memo, next) => memo.then(func(next)), Promise.resolve(true));
 }
 
 const processSQL = (files) => {

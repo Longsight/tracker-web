@@ -10,7 +10,7 @@ const ping = (db, msg) => {
   }
 
   const {mac, time, bat, temp, lat, lon, imported} = Object.fromEntries(msg.split(',').map(part => part.split(':')));
-  if (parseInt(lat) == parseInt(lon) == 0) {
+  if (parseInt(lat) == 0 && parseInt(lon) == 0) {
     return;
   }
   const comp = db.prepare(`

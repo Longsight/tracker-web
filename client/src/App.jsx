@@ -31,7 +31,7 @@ function App() {
   const [competitors, setCompetitors] = useState([]);
   const [focused, setFocused] = useState(null);
   const [track, setTrack] = useState([]);
-  const [timings, setTimings] = useState([]);
+  const [timings, setTimings] = useState({});
   const [ping, setPing] = useState(null);
   
   const socketUrl = `wss://${window.location.hostname}/tracker/ws/`;
@@ -105,7 +105,7 @@ function App() {
             }
           }
         }
-        if (Array.isArray(results.timings)) {
+        if (Array.isArray(Object.values(results.timings))) {
           setTimings(results.timings);
         }
         if (!!results.ping) {

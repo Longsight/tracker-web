@@ -11,6 +11,7 @@ export const trackerRoute = (db) => {
       res.json(tracker);
     } catch (e) {
       res.status(500);
+      res.json(e);
     }
   }
 }

@@ -231,13 +231,16 @@ function App() {
             </GeoJSON>
           </>
         ): null}
-        {competitors.map((competitor) => (
+        {waypoints.length > 0? competitors.map((competitor) => {(
           <Marker 
             key={competitor.bib}
             eventHandlers={{
               click: () => setFocused(competitor.bib),
             }}
-            position={[competitor.lat, competitor.lon]}
+            position={[
+              competitor.lat ?? waypoints[0].geometry.coordinates[1],
+              competitor.lon ?? waypoints[0].geometry.coordinates[0],
+            ]}
           >
             <Popup>
               {competitor.bib == focused? (
@@ -283,7 +286,7 @@ function App() {
               ): null}
             </Popup>
           </Marker>
-        ))}
+        )}): null}
         {track.length > 0? (
           <Polyline
             pathOptions={{ color: 'red' }}

@@ -1,3 +1,5 @@
+import fs from 'fs';
+import readline from 'readline';
 import mqtt from 'mqtt';
 import { parseGPXWithCustomParser } from '@we-gold/gpxjs'
 import { DOMParser } from "xmldom-qsa"

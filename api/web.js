@@ -51,7 +51,7 @@ export const web = (port, db) => {
             r.tag = @race AND
             c.bib = @competitor ORDER BY t.timestamp ASC
           `).all({ race, competitor });
-          const timings = db.prepare(`
+          var timings = db.prepare(`
             SELECT ch.\`name\`, chi.checkpoint, chi.timestamp FROM checkins as chi 
             INNER JOIN checkpoints AS ch ON chi.checkpoint = ch.checkpointid
             INNER JOIN races AS r ON ch.race = r.raceid

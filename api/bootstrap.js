@@ -18,7 +18,7 @@ const chain = (list, func) => {
       return func(list[0]);
     }
     if (index < (list.length - 1)) {
-      return memo.then(() => func(list[index + 1]));
+      return memo.then(func(list[index + 1]));
     }
     return memo;
   }, null);

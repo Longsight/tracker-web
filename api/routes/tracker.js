@@ -1,3 +1,7 @@
+import { logger } from '../logger.js';
+
+const { log, err } = logger('web');
+
 export const trackerRoute = (db) => {
   return (req, res, next) => {
     try {
@@ -9,9 +13,11 @@ export const trackerRoute = (db) => {
         AND t.mac = @mac
       `).get(req.params);
       res.json(tracker);
+      log(`Sent config to tracker ${req.params.mac}`);
     } catch (e) {
       res.status(500);
       res.json(e);
+      err(e);
     }
   }
 }

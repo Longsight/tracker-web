@@ -4,7 +4,7 @@ import { logger } from './logger.js';
 
 const { log, err } = logger('mqtt');
 
-const ping = (msg) => {
+const ping = (db, msg) => {
   if (!msg.match(/^mac:[0-9a-f]{12},time:\d{10,},bat:\d+,temp:[0-9.]+,lat:-?[0-9.]+,lon:-?[0-9.]+(,imported:1)?$/)) {
     return;
   }
@@ -87,7 +87,7 @@ const ping = (msg) => {
   });
 }
 
-const configure = (mac, client) => {
+const configure = (db, mac, client) => {
   if (!mac.match(/^[0-9a-f]{12}$/)) {
     return;
   }
@@ -153,10 +153,10 @@ export const mqttsub = (config, db) => {
 
     switch (msgTopic) {
       case topics.ping:
-        ping(msg);
+        ping(db, msg);
         break;
       case topics.config:
-        configure(msg, client);
+        configure(db, msg, client);
         break;
     }
   });

@@ -173,9 +173,14 @@ function App() {
   var speed = 0;
   if (track.length > 1) {
     const [lastTrack, thisTrack] = track.slice(-2);
-    const distanceCovered = haversine([thisTrack.lat, thisTrack.lon], [lastTrack.lat, lastTrack.lon]);
+    const distanceCovered = haversine({
+      latitude: thisTrack.lat,
+      longitude: thisTrack.lon,
+    }, {
+      latitude: lastTrack.lat,
+      longitude: lastTrack.lon,
+    });
     const timeSince = thisTrack.timestamp - lastTrack.timestamp;
-    console.log(distanceCovered);
     console.log(timeSince);
     speed = (distanceCovered * (3600 / timeSince));
   }

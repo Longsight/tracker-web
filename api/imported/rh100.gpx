@@ -7615,14 +7615,6 @@
         <ele>17.8</ele>
         <time>2026-09-13T12:37:02.390Z</time>
       </trkpt>
-      <trkpt lat="53.362121" lon="-0.855101">
-        <ele>17.8</ele>
-        <time>2026-09-13T12:37:11.193Z</time>
-      </trkpt>
-      <trkpt lat="53.362317" lon="-0.854421">
-        <ele>17.8</ele>
-        <time>2026-09-13T12:37:43.907Z</time>
-      </trkpt>
     </trkseg>
   </trk>
 </gpx>

@@ -21,15 +21,17 @@ const processSQL = (files) => {
     return chain(files, processSQL);
   }
   return new Promise((resolve) => {
-    console.log();
-    console.log();
-    console.log(`=== ${files}`);
     const readInterface = readline.createInterface({
       input: fs.createReadStream(files),
       console: false
     });
     
     var stmt = '';
+    readInterface.on('open', () => {
+      console.log();
+      console.log();
+      console.log(`=== ${files}`);
+    });
     readInterface.on('line', (line) => {
       if (!line) {
         return;

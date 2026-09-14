@@ -2,7 +2,6 @@ import express from 'express';
 import http from 'http';
 import expressWs from 'express-ws';
 import { wsRoute } from './routes/ws.js';
-import { trackerRoute } from './routes/tracker.js';
 import { errorRoute } from './routes/error.js';
 import { logger } from './logger.js';
 
@@ -15,8 +14,6 @@ export const web = (port, db) => {
   app.set('port', port);
   
   app.ws(`/ws`, wsRoute(db));
-  app.get('/{*all}', (req, res, next) => console.log(req));
-  app.get('/config/:mac', trackerRoute(db));
   app.use(errorRoute);
   
   server.listen(port);

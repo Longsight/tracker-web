@@ -12,11 +12,11 @@ export const trackerRoute = (db) => {
         AND c.race = r.raceid
         AND t.mac = @mac
       `).get(req.params);
-      res.send(tracker);
+      res.json(tracker);
       log(`Sent config to tracker ${req.params.mac}`);
     } catch (e) {
       res.status(500);
-      res.send(e);
+      res.json(e);
       err(e);
     }
   }

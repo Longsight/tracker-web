@@ -175,6 +175,8 @@ function App() {
     const [lastTrack, thisTrack] = track.slice(-2);
     const distanceCovered = haversine([thisTrack.lat, thisTrack.lon], [lastTrack.lat, lastTrack.lon]);
     const timeSince = thisTrack.timestamp - lastTrack.timestamp;
+    console.log(distanceCovered);
+    console.log(timeSince);
     speed = (distanceCovered * (3600 / timeSince));
   }
 

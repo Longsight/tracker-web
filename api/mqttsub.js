@@ -103,9 +103,9 @@ const configure = (db, mac, client) => {
       const response = JSON.stringify(tracker);
       try {
         client.publish(`tracker-config-${mac}`, response);
-        log(`Sent config ${response} to tracker ${req.params.mac}`);
+        log(`Sent config ${response} to tracker ${mac}`);
       } catch (error) {
-        err(`Failed to send config ${response} to tracker ${req.params.mac}`);
+        err(`Failed to send config ${response} to tracker ${mac}`);
       }
     }
   } catch (error) {

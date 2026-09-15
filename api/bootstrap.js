@@ -19,6 +19,8 @@ const chain = (list, func) => {
   return list.reduce((memo, next, index) => memo.then(() => func(next, index)), Promise.resolve(true));
 }
 
+const lerp = (x, y, a) => x * (1 - a) + y * a;
+
 const processSQL = (files) => {
   if (Array.isArray(files)) {
     return chain(files, processSQL);
@@ -113,10 +115,16 @@ const processGPX = (files, raceIndex) => {
         const coords = JSON.stringify(points.slice(
           lastMinPoint,
           Math.min(lastMinPoint + 5, points.length)
-        ).map((coord) => ({
-          latitude: coord.latitude,
-          longitude: coord.longitude,
-        })));
+        ).map(({ latitude, longitude }) => ({ latitude, longitude })).reduce((memo, next, index, orig) => {
+          if (index == 0) {
+            return [next];
+          } else {
+            return [...memo, {
+              latitude: lerp(orig[index - 1].latitude, next.latitude, 0.5),
+              longitude: lerp(orig[index - 1].longitude, next.longitude, 0.5),
+            }, next]
+          }
+        }, []));
         const cumulative = parseInt(parsedFile.tracks[0].distance.cumulative[lastMinPoint]);
         try {
           wpStmt.run({

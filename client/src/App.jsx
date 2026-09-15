@@ -299,6 +299,12 @@ function App() {
             positions={track.map(tracked => [tracked.lat, tracked.lon])}
           />
         ): null}
+        {checkpoints.map(checkpoint => (
+          <Polyline
+            pathOptions={{ color: 'green' }}
+            positions={checkpoint.coords.map(coord => [coord.latitude, coord.longitude])}
+          />
+        ))}
         <ScaleControl/>
       </MapContainer>
     </>

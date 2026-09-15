@@ -106,7 +106,7 @@ const processGPX = (files, raceIndex) => {
               lastMinDist = dist;
             }
           } else {
-            if (lastMinDist < 200) {
+            if (lastMinDist < 200 && dist > 1000) {
               break;
             }
           }
@@ -114,12 +114,12 @@ const processGPX = (files, raceIndex) => {
         }
         const coords = JSON.stringify(points.slice(
           lastMinPoint,
-          Math.min(lastMinPoint + 5, points.length)
+          Math.min(pointIndex, points.length)
         ).map(({ latitude, longitude }) => ({ latitude, longitude })).reduce((memo, next, index, orig) => {
           if (index == 0) {
             return [next];
           } else {
-            const lerpCount = parseInt(haversine(orig[index - 1], next, {unit: 'meter'}), 50);
+            const lerpCount = parseInt(haversine(orig[index - 1], next, {unit: 'meter'}), 20);
             const lerpPoints = [];
             for (var i = 1; i < lerpCount; i++) {
               lerpPoints.push({

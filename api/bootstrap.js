@@ -120,8 +120,14 @@ const processGPX = (files, raceIndex) => {
             return [next];
           } else {
             return [...memo, {
+              latitude: lerp(orig[index - 1].latitude, next.latitude, 0.25),
+              longitude: lerp(orig[index - 1].longitude, next.longitude, 0.25),
+            }, {
               latitude: lerp(orig[index - 1].latitude, next.latitude, 0.5),
               longitude: lerp(orig[index - 1].longitude, next.longitude, 0.5),
+            }, {
+              latitude: lerp(orig[index - 1].latitude, next.latitude, 0.75),
+              longitude: lerp(orig[index - 1].longitude, next.longitude, 0.75),
             }, next]
           }
         }, []));

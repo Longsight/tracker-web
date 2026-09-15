@@ -115,7 +115,7 @@ const processGPX = (files, raceIndex) => {
         const coords = JSON.stringify(points.slice(
           lastMinPoint,
           Math.min(Math.max(lastMinPoint + 2, pointIndex), points.length)
-        ).map(({ latitude, longitude }) => ({ latitude, longitude })).reduce((memo, next, index, orig) => {
+        ).map(({latitude, longitude}) => ({latitude, longitude})).reduce((memo, next, index, orig) => {
           if (index == 0) {
             return [next];
           } else {
@@ -129,7 +129,7 @@ const processGPX = (files, raceIndex) => {
             }
             return [...memo, ...lerpPoints, next];
           }
-        }, []));
+        }, [])).map(({latitude, longitude}) => [latitude, longitude]);
         const cumulative = parseInt(parsedFile.tracks[0].distance.cumulative[lastMinPoint]);
         try {
           wpStmt.run({

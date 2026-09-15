@@ -62,7 +62,7 @@ export const wsRoute = (db) => {
   
       if (command == 'fetchCheckpoints') {
         results = db.prepare(`
-          SELECT ch.checkpointid, ch.\`name\`, ch.distance, ch.cumulative
+          SELECT ch.checkpointid, ch.\`name\`, ch.distance, ch.cumulative, ch.coords
           FROM checkpoints as ch, races as r WHERE ch.race = r.raceid
           AND ch.\`name\` IS NOT NULL AND r.tag = @race
           ORDER BY ch.\`order\` ASC

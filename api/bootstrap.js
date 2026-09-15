@@ -86,7 +86,7 @@ const processGPX = (files, raceIndex) => {
       `);
       var pointIndex = 0;
       var lastMinPoint = 0;
-      var lastMinDist = 50;
+      var lastMinDist = 200;
       var lastCPDist = 0;
       const points = parsedFile.tracks[0].points;
       parsedFile.waypoints.forEach((checkpoint, index) => {
@@ -100,13 +100,13 @@ const processGPX = (files, raceIndex) => {
             lastMinDist = dist;
             break;
           }
-          if (dist < 50) {
+          if (dist < 200) {
             if (dist < lastMinDist) {
               lastMinPoint = pointIndex;
               lastMinDist = dist;
             }
           } else {
-            if (lastMinDist < 50) {
+            if (lastMinDist < 200) {
               break;
             }
           }
@@ -119,16 +119,15 @@ const processGPX = (files, raceIndex) => {
           if (index == 0) {
             return [next];
           } else {
-            return [...memo, {
-              latitude: lerp(orig[index - 1].latitude, next.latitude, 0.25),
-              longitude: lerp(orig[index - 1].longitude, next.longitude, 0.25),
-            }, {
-              latitude: lerp(orig[index - 1].latitude, next.latitude, 0.5),
-              longitude: lerp(orig[index - 1].longitude, next.longitude, 0.5),
-            }, {
-              latitude: lerp(orig[index - 1].latitude, next.latitude, 0.75),
-              longitude: lerp(orig[index - 1].longitude, next.longitude, 0.75),
-            }, next]
+            const lerpCount = parseInt(haversine(orig[index - 1], next, {unit: 'meter'}), 20);
+            const lerpPoints = [];
+            for (var i = 1; i < lerpCount; i++) {
+              lerpPoints.push({
+                latitude: lerp(orig[index - 1].latitude, next.latitude, (1.0 / lerpCount) * i),
+                longitude: lerp(orig[index - 1].longitude, next.longitude, (1.0 / lerpCount) * i),
+              });
+            }
+            return [...memo, ...lerpPoints, next];
           }
         }, []));
         const cumulative = parseInt(parsedFile.tracks[0].distance.cumulative[lastMinPoint]);

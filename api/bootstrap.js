@@ -129,7 +129,7 @@ const processGPX = (files, raceIndex) => {
             }
             return [...memo, ...lerpPoints, next];
           }
-        }, [])).map(({latitude, longitude}) => [latitude, longitude]);
+        }, []).map(({latitude, longitude}) => [latitude, longitude]));
         const cumulative = parseInt(parsedFile.tracks[0].distance.cumulative[lastMinPoint]);
         try {
           wpStmt.run({

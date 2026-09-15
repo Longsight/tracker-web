@@ -302,7 +302,7 @@ function App() {
         {checkpoints.map(checkpoint => (
           <Polyline
             pathOptions={{ color: 'green' }}
-            positions={checkpoint.coords.map(coord => [coord.latitude, coord.longitude])}
+            positions={JSON.parse(checkpoint.coords).map(coord => [coord.latitude, coord.longitude])}
           />
         ))}
         <ScaleControl/>

@@ -16,7 +16,7 @@ const customParseMethod = (txt) => {
 }
 
 const chain = (list, func) => {
-  return list.reduce((memo, next) => memo.then(() => func(next)), Promise.resolve(true));
+  return list.reduce((memo, next, index) => memo.then(() => func(next, index)), Promise.resolve(true));
 }
 
 const processSQL = (files) => {
@@ -65,7 +65,7 @@ const processSQL = (files) => {
   });
 }
 
-const processGPX = (files) => {
+const processGPX = (files, raceIndex) => {
   if (Array.isArray(files)) {
     return chain(files, processGPX);
   }
@@ -121,7 +121,7 @@ const processGPX = (files) => {
         try {
           wpStmt.run({
             order: index,
-            race: 1,
+            race: raceIndex + 1,
             distance: cumulative - lastCPDist,
             cumulative,
             name: null,

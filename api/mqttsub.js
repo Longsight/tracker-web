@@ -105,7 +105,7 @@ const configure = (db, mac, client) => {
       finish_time: 0,
       battery_capacity: 2000
     };
-    response = JSON.stringify(tracker);
+    const response = JSON.stringify(tracker);
     try {
       client.publish(`tracker-config-${mac}`, response);
       log(`Sent config ${response} to tracker ${mac}`);

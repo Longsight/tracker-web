@@ -86,7 +86,7 @@ const processGPX = (files, raceIndex) => {
       `);
       var pointIndex = 0;
       var lastMinPoint = 0;
-      var lastMinDist = 200;
+      var lastMinDist = 100;
       var lastCPDist = 0;
       const points = parsedFile.tracks[0].points;
       parsedFile.waypoints.forEach((checkpoint, index) => {
@@ -100,13 +100,13 @@ const processGPX = (files, raceIndex) => {
             lastMinDist = dist;
             break;
           }
-          if (dist < 200) {
+          if (dist < 100) {
             if (dist < lastMinDist) {
               lastMinPoint = pointIndex;
               lastMinDist = dist;
             }
           } else {
-            if (lastMinDist < 200) {
+            if (lastMinDist < 100) {
               break;
             }
           }
@@ -144,7 +144,7 @@ const processGPX = (files, raceIndex) => {
         } catch (e) {
           err(e.message);
         }
-        lastMinDist = 200;
+        lastMinDist = 100;
         lastCPDist = cumulative;
       });
       resolve();

@@ -114,7 +114,7 @@ const processGPX = (files, raceIndex) => {
         }
         const coords = JSON.stringify(points.slice(
           lastMinPoint,
-          Math.min(pointIndex, points.length)
+          Math.min(Math.max(lastMinPoint + 1, pointIndex), points.length)
         ).map(({ latitude, longitude }) => ({ latitude, longitude })).reduce((memo, next, index, orig) => {
           if (index == 0) {
             return [next];

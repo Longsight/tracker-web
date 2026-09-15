@@ -303,7 +303,7 @@ function App() {
         ): null}
         {DEBUG? checkpoints.map(checkpoint => JSON.parse(checkpoint.coords).map(point => (
           <Circle
-            center={[point.latitude, point.longitude]}
+            center={point}
             radius={50}
           />
         ))): null}

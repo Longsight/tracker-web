@@ -63,7 +63,7 @@ const ping = (db, msg) => {
   if (!nextCP) {
     return;
   }
-  const cpCoords = JSON.parse(nextCP.coords);
+  const cpCoords = JSON.parse(nextCP.coords).map(([latitude, longitude]) => ({latitude, longitude}));
   if (!haversine(newCoords, cpCoords[0], {threshold: 1500, unit: 'meter'})) {
     return;
   }

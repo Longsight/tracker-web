@@ -94,17 +94,10 @@ const configure = (db, mac, client) => {
   try {
     const tracker = db.prepare(`
       SELECT r.sleep_time, r.queue_size, r.start_time, r.finish_time, t.battery_capacity
-      FROM trackers AS t, competitors AS c, races as r
-      WHERE t.competitor = c.competitorid
-      AND c.race = r.raceid
-      AND t.mac = @mac
-    `).get({ mac }) ?? {
-      sleep_time: 0,
-      queue_size: 0,
-      start_time: 0,
-      finish_time: 0,
-      battery_capacity: 2000
-    };
+      FROM trackers AS t LEFT JOIN competitors AS c LEFT JOIN races as r
+      ON t.competitor = c.competitorid
+      AND c.race = r.raceid WHERE t.mac = @mac
+    `).get({ mac });
     const response = JSON.stringify(tracker);
     try {
       client.publish(`tracker-config-${mac}`, response);

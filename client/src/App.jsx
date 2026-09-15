@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from 'react';
 import {
-  MapContainer, TileLayer, GeoJSON, Popup,
+  MapContainer, TileLayer, GeoJSON, Popup, Circle,
   CircleMarker, Marker, Polyline, ScaleControl } from 'react-leaflet'
 import { ReadyState } from 'react-use-websocket';
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";

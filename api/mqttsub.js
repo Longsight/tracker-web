@@ -56,7 +56,9 @@ const ping = (db, msg) => {
 
   // Test next checkpoint against new track
   const nextCP = db.prepare(`
-    SELECT * FROM checkpoints WHERE race = @race AND \`order\` > @order ORDER BY \`order\` ASC LIMIT 1
+    SELECT c.*, r.tolerance FROM checkpoints AS c, races AS r WHERE
+    c.race = r.raceid AND r.raceid = @race AND c.\`order\` > @order
+    ORDER BY \`order\` ASC LIMIT 1
   `).get({ race: comp.raceid, order: lastOrder });
   if (!nextCP) {
     return;
@@ -69,7 +71,7 @@ const ping = (db, msg) => {
     if (!!lastCP && nextCP.name == lastCP.name) {
       return;
     }
-    if (haversine(newCoords, testCoords, {threshold: 200, unit: 'meter'})) {
+    if (haversine(newCoords, testCoords, {threshold: nextCP.tolerance, unit: 'meter'})) {
       try {
         db.prepare(`
           INSERT INTO checkins (competitor, checkpoint, timestamp)

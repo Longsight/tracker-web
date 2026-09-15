@@ -5,7 +5,9 @@ create table races(
     sleep_time integer,
     queue_size integer,
     start_time integer,
-    finish_time integer)
+    finish_time integer,
+    lapped integer default 0,
+    tolerance integer)
 create table checkpoints(
     checkpointid integer primary key autoincrement,
     `name` text,

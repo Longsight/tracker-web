@@ -98,15 +98,19 @@ const configure = (db, mac, client) => {
       WHERE t.competitor = c.competitorid
       AND c.race = r.raceid
       AND t.mac = @mac
-    `).get({ mac });
-    if (tracker) {
-      const response = JSON.stringify(tracker);
-      try {
-        client.publish(`tracker-config-${mac}`, response);
-        log(`Sent config ${response} to tracker ${mac}`);
-      } catch (error) {
-        err(`Failed to send config ${response} to tracker ${mac}`);
-      }
+    `).get({ mac }) ?? {
+      sleep_time: 0,
+      queue_size: 0,
+      start_time: 0,
+      finish_time: 0,
+      battery_capacity: 2000
+    };
+    response = JSON.stringify(tracker);
+    try {
+      client.publish(`tracker-config-${mac}`, response);
+      log(`Sent config ${response} to tracker ${mac}`);
+    } catch (error) {
+      err(`Failed to send config ${response} to tracker ${mac}`);
     }
   } catch (error) {
     err(error);

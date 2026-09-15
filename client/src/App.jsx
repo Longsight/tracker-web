@@ -9,6 +9,8 @@ import './App.css';
 import { parseGPX } from '@we-gold/gpxjs'
 import haversine from 'haversine';
 
+const DEBUG = false;
+
 const initial = [53.284784, -1.089135];
 const raceName = window.location.pathname.replace('/tracker/', '');
 
@@ -299,12 +301,12 @@ function App() {
             positions={track.map(tracked => [tracked.lat, tracked.lon])}
           />
         ): null}
-        {checkpoints.map(checkpoint => JSON.parse(checkpoint.coords).map(point => (
+        {DEBUG? checkpoints.map(checkpoint => JSON.parse(checkpoint.coords).map(point => (
           <Circle
             center={[point.latitude, point.longitude]}
             radius={50}
           />
-        )))}
+        ))): null}
         <ScaleControl/>
       </MapContainer>
     </>

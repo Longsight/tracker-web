@@ -10,6 +10,12 @@ export const wsRoute = (db) => {
       if (!race || !command) {
         results = null;
       }
+
+      if (command == 'fetchRace') {
+        results = db.prepare(`
+          SELECT * from races WHERE tag = @race
+        `).get({ race });
+      }
   
       if (command == 'fetchAll') {
         results = db.prepare(`
@@ -68,13 +74,18 @@ export const wsRoute = (db) => {
           ORDER BY ch.\`order\` ASC
         `).all({ race });
       }
-  
-      if (command == 'fetchRace') {
-        results = db.prepare(`
-          SELECT * from races WHERE tag = @race
-        `).get({ race });
+
+      if (command == 'fetchLaps') {
+        const { competitor } = opts;
+        if (!competitor) {
+          results = null;
+        } else {
+          results = db.prepare(`
+            SELECT * from laps WHERE competitor = @comp
+          `).get({ race });
+        }
       }
-  
+
       ws.send(JSON.stringify({
         command,
         results,

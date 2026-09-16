@@ -287,7 +287,7 @@ function App() {
                       <td>{competitorStatus(competitor)}</td>
                       <td>Speed: {speed.toFixed(1)} km/h</td>
                     </tr>
-                    {ping? (
+                    {!!ping? (
                       <>
                         <tr>
                           <td>Last tracked:</td>
@@ -296,6 +296,18 @@ function App() {
                         <tr>
                           <td>Battery:</td>
                           <td><strong>{ping.bat}%</strong></td>
+                        </tr>
+                      </>
+                    ): null}
+                    {!!laps? (
+                      <>
+                        <tr>
+                          <td>Laps: <strong>{laps.count}</strong></td>
+                          <td>Fastest: <strong>{laps.min}</strong></td>
+                        </tr>
+                        <tr>
+                          <td>Last: <strong>{laps.last}</strong></td>
+                          <td>Slowest: <strong>{laps.max}</strong></td>
                         </tr>
                       </>
                     ): null}

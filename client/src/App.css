@@ -20,15 +20,15 @@ table {
 
 td, th {
     box-sizing: border-box;
-    width: 186px;
-    min-width: 186px;
+    width: 166px;
+    min-width: 166px;
     padding: 3px 10px;
 }
 
 td:last-child, th:last-child  {
     text-align: right;
-    width: 120px;
-    min-width: 120px;
+    width: 140px;
+    min-width: 140px;
 }
 
 tbody tr:nth-child(2n+1) {

@@ -314,7 +314,7 @@ function App() {
                     {!!laps? (
                       <>
                         <tr>
-                          <td>Laps: <strong>{secondsToTime(laps.count)}</strong></td>
+                          <td>Laps: <strong>{laps.count}</strong></td>
                           <td>Fastest: <strong>{secondsToTime(laps.min)}</strong></td>
                         </tr>
                         <tr>

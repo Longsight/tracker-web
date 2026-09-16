@@ -311,7 +311,7 @@ function App() {
                         </tr>
                       </>
                     ): null}
-                    {!!laps? (
+                    {!!laps && laps.count > 0? (
                       <>
                         <tr>
                           <td>Laps: <strong>{laps.count}</strong></td>

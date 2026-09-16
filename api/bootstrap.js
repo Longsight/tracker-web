@@ -120,7 +120,7 @@ const processGPX = () => {
             if (index == 0) {
               return [next];
             } else {
-              const lerpCount = parseInt(haversine(orig[index - 1], next, {unit: 'meter'}) / race.tolerance);
+              const lerpCount = parseInt(haversine(orig[index - 1], next, {unit: 'meter'}) / (race.tolerance * 0.7));
               const lerpPoints = [];
               for (var i = 1; i < lerpCount; i++) {
                 lerpPoints.push({

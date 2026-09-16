@@ -152,6 +152,11 @@ function App() {
         setCheckpoints(results);
       }
     }
+    if (command == 'fetchLaps') {
+      if (!!results) {
+        setLaps(results);
+      }
+    }
   }, [lastJsonMessage]);
 
   // Page load

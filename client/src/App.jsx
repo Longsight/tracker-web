@@ -22,6 +22,13 @@ const checkpointTitle = (checkpoint) => {
   return `From start: ${cumulative}km     From last: ${distance}km`;
 }
 
+const secondsToTime = (input) => {
+  const hours = Math.floor(input / 3600);
+  const mins = Math.floor((input % 3600) / 60);
+  const secs = Math.floor(input % 60);
+  return `${hours.padStart(2, '0')}:${mins.padStart(2, '0')}:${secs.padStart(2, '0')}`;
+}
+
 function App() {
   const [fetchedAll, setFetchedAll] = useState(false);
   const [fetchedCompetitor, setFetchedCompetitor] = useState(false);
@@ -307,12 +314,12 @@ function App() {
                     {!!laps? (
                       <>
                         <tr>
-                          <td>Laps: <strong>{laps.count}</strong></td>
-                          <td>Fastest: <strong>{laps.min}</strong></td>
+                          <td>Laps: <strong>{secondsToTime(laps.count)}</strong></td>
+                          <td>Fastest: <strong>{secondsToTime(laps.min)}</strong></td>
                         </tr>
                         <tr>
-                          <td>Last: <strong>{laps.last}</strong></td>
-                          <td>Slowest: <strong>{laps.max}</strong></td>
+                          <td>Last: <strong>{secondsToTime(laps.last)}</strong></td>
+                          <td>Slowest: <strong>{secondsToTime(laps.max)}</strong></td>
                         </tr>
                       </>
                     ): null}

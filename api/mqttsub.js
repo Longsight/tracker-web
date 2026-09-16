@@ -87,7 +87,7 @@ const ping = (db, msg) => {
       }
       if (comp.lapped == 1) {
         const finalCP = db.prepare(`
-          SELECT checkpointid FROM checkpoints WHERE race = @race ORDER BY c.\`order\` DESC LIMIT 1
+          SELECT checkpointid FROM checkpoints WHERE race = @race ORDER BY \`order\` DESC LIMIT 1
         `).get({ race: comp.raceid });
         if (finalCP.checkpointid == nextCP.checkpointid) {
           try {

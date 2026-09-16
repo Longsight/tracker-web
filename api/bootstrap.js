@@ -67,93 +67,92 @@ const processSQL = (files) => {
   });
 }
 
-const processGPX = (files, raceIndex) => {
-  if (Array.isArray(files)) {
-    return chain(files, processGPX);
-  }
-  return new Promise((resolve) => {
-    fs.readFile(files, 'utf8', (readerr, data) => {
-      if (readerr) {
-        err(readerr);
-      }
-      const [parsedFile, gpxerr] = parseGPXWithCustomParser(data, customParseMethod);
-      if (gpxerr) {
-        err(gpxerr);
-      }
-      const wpStmt = db.prepare(`
-        insert into checkpoints (\`name\`, race, \`order\`, coords, cumulative, distance) values
-        (@name, @race, @order, @coords, @cumulative, @distance)
-      `);
-      var pointIndex = 0;
-      var lastMinPoint = 0;
-      var lastMinDist = 100;
-      var lastCPDist = 0;
-      const points = parsedFile.tracks[0].points;
-      parsedFile.waypoints.forEach((checkpoint, index) => {
-        while (true) {
-          if (!points[index]) {
-            break;
-          }
-          const dist = haversine(points[pointIndex], checkpoint, {unit: 'meter'});
-          if (dist < 10) {
-            lastMinPoint = pointIndex;
-            lastMinDist = dist;
-            break;
-          }
-          if (dist < 100) {
-            if (dist < lastMinDist) {
-              lastMinPoint = pointIndex;
-              lastMinDist = dist;
-            }
-          } else {
-            if (lastMinDist < 100) {
+const processGPX = () => {
+  const races = db.prepare(`
+    SELECT raceid, tag, tolerance FROM races
+  `).all();
+  return Promise.all(races.map((race) => {
+    return new Promise((resolve) => {
+      fs.readFile(`../client/public/gpx/${race.tag}.gpx`, 'utf8', (readerr, data) => {
+        if (readerr) {
+          err(readerr);
+        }
+        const [parsedFile, gpxerr] = parseGPXWithCustomParser(data, customParseMethod);
+        if (gpxerr) {
+          err(gpxerr);
+        }
+        const wpStmt = db.prepare(`
+          insert into checkpoints (\`name\`, race, \`order\`, coords, cumulative, distance) values
+          (@name, @race, @order, @coords, @cumulative, @distance)
+        `);
+        var pointIndex = 0;
+        var lastMinPoint = 0;
+        var lastMinDist = 100;
+        var lastCPDist = 0;
+        const points = parsedFile.tracks[0].points;
+        parsedFile.waypoints.forEach((checkpoint, index) => {
+          while (true) {
+            if (!points[index]) {
               break;
             }
-          }
-          pointIndex++;
-        }
-        const coords = JSON.stringify(points.slice(
-          lastMinPoint,
-          Math.min(Math.max(lastMinPoint + 4, pointIndex), points.length)
-        ).map(({latitude, longitude}) => ({latitude, longitude})).reduce((memo, next, index, orig) => {
-          if (index == 0) {
-            return [next];
-          } else {
-            const lerpCount = parseInt(haversine(orig[index - 1], next, {unit: 'meter'}) / 20);
-            const lerpPoints = [];
-            for (var i = 1; i < lerpCount; i++) {
-              lerpPoints.push({
-                latitude: lerp(orig[index - 1].latitude, next.latitude, (1.0 / lerpCount) * i),
-                longitude: lerp(orig[index - 1].longitude, next.longitude, (1.0 / lerpCount) * i),
-              });
+            const dist = haversine(points[pointIndex], checkpoint, {unit: 'meter'});
+            if (dist < 10) {
+              lastMinPoint = pointIndex;
+              lastMinDist = dist;
+              break;
             }
-            return [...memo, ...lerpPoints, next];
+            if (dist < 100) {
+              if (dist < lastMinDist) {
+                lastMinPoint = pointIndex;
+                lastMinDist = dist;
+              }
+            } else {
+              if (lastMinDist < 100) {
+                break;
+              }
+            }
+            pointIndex++;
           }
-        }, []).map(({latitude, longitude}) => [latitude, longitude]));
-        const cumulative = parseInt(parsedFile.tracks[0].distance.cumulative[lastMinPoint]);
-        try {
-          wpStmt.run({
-            order: index,
-            race: raceIndex + 1,
-            distance: cumulative - lastCPDist,
-            cumulative,
-            name: null,
-            coords,
-            ...checkpoint
-          });
-        } catch (e) {
-          err(e.message);
-        }
-        lastMinDist = 100;
-        lastCPDist = cumulative;
+          const coords = JSON.stringify(points.slice(
+            lastMinPoint,
+            Math.min(Math.max(lastMinPoint + 4, pointIndex), points.length)
+          ).map(({latitude, longitude}) => ({latitude, longitude})).reduce((memo, next, index, orig) => {
+            if (index == 0) {
+              return [next];
+            } else {
+              const lerpCount = parseInt(haversine(orig[index - 1], next, {unit: 'meter'}) / race.tolerance);
+              const lerpPoints = [];
+              for (var i = 1; i < lerpCount; i++) {
+                lerpPoints.push({
+                  latitude: lerp(orig[index - 1].latitude, next.latitude, (1.0 / lerpCount) * i),
+                  longitude: lerp(orig[index - 1].longitude, next.longitude, (1.0 / lerpCount) * i),
+                });
+              }
+              return [...memo, ...lerpPoints, next];
+            }
+          }, []).map(({latitude, longitude}) => [latitude, longitude]));
+          const cumulative = parseInt(parsedFile.tracks[0].distance.cumulative[lastMinPoint]);
+          try {
+            wpStmt.run({
+              order: index,
+              race: race.raceid,
+              distance: cumulative - lastCPDist,
+              cumulative,
+              name: null,
+              coords,
+              ...checkpoint
+            });
+          } catch (e) {
+            err(e.message);
+          }
+          lastMinDist = 100;
+          lastCPDist = cumulative;
+        });
+        resolve();
       });
-      resolve();
     });
-  });
+  }));
 }
 
 processSQL(['schema.sql', 'bootstrap/first.sql'])
-  .then(() => processGPX([
-    '../client/public/gpx/rh100.gpx',
-    '../client/public/gpx/equinox.gpx',
-  ]))
+  .then(() => processGPX());

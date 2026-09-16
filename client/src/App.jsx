@@ -26,7 +26,7 @@ const secondsToTime = (input) => {
   const hours = Math.floor(input / 3600);
   const mins = Math.floor((input % 3600) / 60);
   const secs = Math.floor(input % 60);
-  return `${hours.padStart(2, '0')}:${mins.padStart(2, '0')}:${secs.padStart(2, '0')}`;
+  return `${`${hours}`.padStart(2, '0')}:${`${mins}`.padStart(2, '0')}:${`${secs}`.padStart(2, '0')}`;
 }
 
 function App() {

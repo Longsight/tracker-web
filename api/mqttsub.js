@@ -97,11 +97,19 @@ const ping = (db, msg) => {
                   SELECT COALESCE(MAX(lap), 0) from laps WHERE competitor = @comp
                 ) + 1, @time - (
                   SELECT timestamp FROM checkins WHERE
-                  competitor = @comp AND checkpoint = MIN(checkpoint)
+                  competitor = @comp AND checkpoint = (
+                    SELECT MIN(checkpoint) FROM checkins WHERE
+                    competitor = @comp
+                  )
                 ))
             `).run({
               comp: comp.competitor,
               time,
+            });
+            db.prepare(`
+              DELETE FROM checkins WHERE competitor = @comp
+            `).run({
+              comp: comp.competitor,
             });
           } catch (error) {
             err(error);

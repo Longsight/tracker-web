@@ -69,6 +69,12 @@ export const wsRoute = (db) => {
         `).all({ race });
       }
   
+      if (command == 'fetchRace') {
+        results = db.prepare(`
+          SELECT * from races WHERE tag = @race
+        `).get({ race });
+      }
+  
       ws.send(JSON.stringify({
         command,
         results,

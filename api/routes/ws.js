@@ -80,9 +80,18 @@ export const wsRoute = (db) => {
         if (!competitor) {
           results = null;
         } else {
-          results = db.prepare(`
-            SELECT * from laps WHERE competitor = @comp
-          `).get({ race });
+          const stats = db.prepare(`
+            SELECT COUNT(*) AS \`count\`, MAX(time) AS \`max\`, MIN(time) AS \`min\`
+            FROM laps WHERE competitor = @competitor
+          `).get({ competitor });
+          const last = db.prepare(`
+            SELECT time FROM laps WHERE competitor = @competitor
+            ORDER BY lap DESC LIMIT 1
+          `).pluck().get({ competitor });
+          results = {
+            ...stats,
+            last,
+          }
         }
       }
 

@@ -27,10 +27,12 @@ function App() {
   const [fetchedCompetitor, setFetchedCompetitor] = useState(false);
   const [fetchedCheckpoints, setFetchedCheckpoints] = useState(false);
   const [fetchedRace, setFetchedRace] = useState(false);
+  const [fetchedLaps, setFetchedLaps] = useState(false);
   const [map, setMap] = useState(null);
   const [raceRoute, setRaceRoute] = useState(null);
   const [checkpoints, setCheckpoints] = useState([]);
   const [race, setRace] = useState(null);
+  const [laps, setLaps] = useState(null);
   const [waypoints, setWaypoints] = useState([]);
   const [competitors, setCompetitors] = useState([]);
   const [focused, setFocused] = useState(null);
@@ -98,6 +100,20 @@ function App() {
       });
     }
   }, [readyState, fetchedCompetitor, focused]);
+
+  // Fetch laps
+  useEffect(() => {
+    if (!!race && race.lapped == 1 && readyState === ReadyState.OPEN && !fetchedLaps && !!focused) {
+      setFetchedLaps(true);
+      sendUpdate({
+        command: 'fetchLaps',
+        race: raceName,
+        opts: {
+          competitor: focused
+        },
+      });
+    }
+  }, [readyState, fetchedLaps, focused, race]);
 
   // Process ws response
   useEffect(() => {

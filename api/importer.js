@@ -69,4 +69,4 @@ export const importer = (files) => {
   });
 }
 
-importer('imported/rh100.gpx');
+importer('imported/rh100-2.gpx');

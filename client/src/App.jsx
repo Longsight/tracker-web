@@ -26,9 +26,11 @@ function App() {
   const [fetchedAll, setFetchedAll] = useState(false);
   const [fetchedCompetitor, setFetchedCompetitor] = useState(false);
   const [fetchedCheckpoints, setFetchedCheckpoints] = useState(false);
+  const [fetchedRace, setFetchedRace] = useState(false);
   const [map, setMap] = useState(null);
   const [raceRoute, setRaceRoute] = useState(null);
   const [checkpoints, setCheckpoints] = useState([]);
+  const [race, setRace] = useState(null);
   const [waypoints, setWaypoints] = useState([]);
   const [competitors, setCompetitors] = useState([]);
   const [focused, setFocused] = useState(null);
@@ -49,6 +51,17 @@ function App() {
       sendJsonMessage(data);
     }
   }, [readyState, sendJsonMessage]);
+
+  // Fetch race
+  useEffect(() => {
+    if (readyState === ReadyState.OPEN && !fetchedRace) {
+      setFetchedRace(true);
+      sendUpdate({
+        command: 'fetchRace',
+        race: raceName,
+      });
+    }
+  }, [readyState, fetchedRace]);
 
   // Fetch all competitors
   useEffect(() => {
@@ -92,6 +105,9 @@ function App() {
       return;
     }
     const { command, results } = lastJsonMessage;
+    if (command == 'fetchRace') {
+      setRace(results);
+    }
     if (command == 'fetchAll') {
       setCompetitors(results);
       setFocused(results[0].bib);
@@ -301,10 +317,10 @@ function App() {
             positions={track.map(tracked => [tracked.lat, tracked.lon])}
           />
         ): null}
-        {DEBUG? checkpoints.map(checkpoint => JSON.parse(checkpoint.coords).map(point => (
+        {DEBUG && race? checkpoints.map(checkpoint => JSON.parse(checkpoint.coords).map(point => (
           <Circle
             center={point}
-            radius={50}
+            radius={race.tolerance}
           />
         ))): null}
         <ScaleControl/>

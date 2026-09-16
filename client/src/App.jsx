@@ -9,7 +9,7 @@ import './App.css';
 import { parseGPX } from '@we-gold/gpxjs'
 import haversine from 'haversine';
 
-const DEBUG = true;
+const DEBUG = false;
 
 const initial = [53.284784, -1.089135];
 const raceName = window.location.pathname.replace('/tracker/', '');

@@ -16,7 +16,7 @@ export const importer = (files) => {
     url,
     username,
     password,
-    topic
+    topics
   } = mqttconfig;
 
   const client = mqtt.connect(url, {
@@ -30,9 +30,9 @@ export const importer = (files) => {
 
   client.on('connect', () => {
     warn('Connected')
-    client.subscribe([topic], () => {
-      warn(`Subscribed to topic '${topic}'`);
-    })
+    // client.subscribe([topics.ping], () => {
+    //   warn(`Subscribed to topic '${topics.ping}'`);
+    // })
   });
 
   client.on('error', (error) => {
@@ -58,7 +58,7 @@ export const importer = (files) => {
       const point = points[index];
       const time = parseInt(new Date(point.time).getTime() / 1000);
       const { latitude, longitude } = point;
-      client.publish(topic, 
+      client.publish(topics.ping, 
         `mac:206ef1e26064,time:${time},bat:93,temp:18.80,lat:${latitude},lon:${longitude},imported:1`
       );
       setTimeout(() => publishTrack(index + 1), 10);

@@ -57,8 +57,8 @@ const ping = (db, msg) => {
   // Test next checkpoint against new track
   const nextCP = db.prepare(`
     SELECT c.*, r.tolerance FROM checkpoints AS c, races AS r WHERE
-    c.race = r.raceid AND r.raceid = @race AND c.\`order\` > @order
-    ORDER BY \`order\` ASC LIMIT 1
+      c.race = r.raceid AND r.raceid = @race AND c.\`order\` > @order
+      ORDER BY \`order\` ASC LIMIT 1
   `).get({ race: comp.raceid, order: lastOrder });
   if (!nextCP) {
     return;
@@ -75,7 +75,7 @@ const ping = (db, msg) => {
       try {
         db.prepare(`
           INSERT INTO checkins (competitor, checkpoint, timestamp)
-          VALUES (@comp, @cp, @time)
+            VALUES (@comp, @cp, @time)
         `).run({
           comp: comp.competitor,
           cp: nextCP.checkpointid,
@@ -84,6 +84,29 @@ const ping = (db, msg) => {
         log(`Competitor ${comp.competitor} in race ${comp.raceid} reached CP ${nextCP.checkpointid}`);
       } catch (error) {
         err(error);
+      }
+      if (comp.lapped == 1) {
+        const finalCP = db.prepare(`
+          SELECT checkpointid FROM checkpoints WHERE raceid = @race ORDER BY c.\`order\` DESC LIMIT 1
+        `).get({ race: comp.raceid });
+        if (finalCP.checkpointid == nextCP.checkpointid) {
+          try {
+            db.prepare(`
+              INSERT INTO laps (competitor, lap, time)
+                VALUES (@comp, (
+                  SELECT COALESCE(MAX(lap), 0) from laps WHERE competitor = @comp
+                ) + 1, @time - (
+                  SELECT timestamp FROM checkins WHERE
+                  competitor = @comp AND checkpoint = MIN(checkpoint)
+                ))
+            `).run({
+              comp: comp.competitor,
+              time,
+            });
+          } catch (error) {
+            err(error);
+          }
+        }
       }
     }
   });

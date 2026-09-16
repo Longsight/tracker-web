@@ -61,7 +61,7 @@ export const importer = (files) => {
       client.publish(topics.ping, 
         `mac:206ef1e26064,time:${time},bat:93,temp:18.80,lat:${latitude},lon:${longitude},imported:1`
       );
-      setTimeout(() => publishTrack(index + 1), 10);
+      setTimeout(() => publishTrack(index + 1), 20);
     };
 
     warn(`Sending ${points.length} trackpoints...`);

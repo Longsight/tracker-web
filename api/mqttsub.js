@@ -127,7 +127,7 @@ const configure = (db, mac, client) => {
   try {
     const tracker = db.prepare(`
       SELECT r.sleep_time, r.queue_size, r.start_time, r.finish_time, t.battery_capacity
-      FROM trackers AS t LEFT JOIN competitors AS c LEFT JOIN races as r
+      FROM trackers AS t INNER JOIN competitors AS c INNER JOIN races as r
       ON t.competitor = c.competitorid
       AND c.race = r.raceid WHERE t.mac = @mac
     `).get({ mac });
